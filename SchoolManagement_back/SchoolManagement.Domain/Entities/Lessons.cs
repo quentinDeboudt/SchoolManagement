@@ -1,8 +1,9 @@
-namespace Domain.Entities;
+namespace SchoolManagement.Domain.Entities;
 
-public class Lessons
+public class Classroom
 {
-    public Guid Id {get; set; }
-    public required string Subject_Id {get; set; }
-    public required string Teachers_Id {get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<GroupClassroom> GroupClassrooms { get; set; }
+    public ICollection<TeacherClassroom> TeacherClassrooms { get; set; }
 }
