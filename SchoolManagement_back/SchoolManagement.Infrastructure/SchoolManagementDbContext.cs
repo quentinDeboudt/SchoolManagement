@@ -44,6 +44,12 @@ public class SchoolManagementDbContext : DbContext
             .WithMany(g => g.Lessons)
             .UsingEntity(j => j.ToTable("LessonGroup"));
 
+        modelBuilder.Entity<Group>()
+            .HasOne(g => g.Classroom)
+            .WithMany(c => c.Groups)
+            .HasForeignKey(g => g.ClassroomId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         base.OnModelCreating(modelBuilder);
     }
 }
