@@ -1,0 +1,6 @@
+@school_calendar_back_HostAddress = http://localhost:5034
+
+GET {{school_calendar_back_HostAddress}}//
+Accept: application/json
+
+###

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\school_calendar_back.props" />
+</Project>
