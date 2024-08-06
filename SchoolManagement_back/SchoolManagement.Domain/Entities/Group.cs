@@ -6,6 +6,6 @@ public class Group
     public string Name { get; set; }
     public int ClassroomId { get; set; }
     public Classroom Classroom { get; set; }
-    public ICollection<StudentGroup> StudentGroups { get; set; }
-    public ICollection<GroupClassroom> GroupClassrooms { get; set; }
+    public ICollection<Person> Students { get; set; } = new List<Person>();
+    public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

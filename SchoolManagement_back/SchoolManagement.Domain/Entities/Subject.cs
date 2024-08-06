@@ -4,5 +4,5 @@ public class Subject
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public ICollection<LessonSubject> LessonSubjects { get; set; }
+    public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

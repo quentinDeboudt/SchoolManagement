@@ -2,11 +2,11 @@ namespace SchoolManagement.Domain.Entities;
 
 public class Person
 {
-    public Guid Id { get; set; }
+     public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public ICollection<PersonRole> PersonRoles { get; set; }
-    public ICollection<StudentGroup> StudentGroups { get; set; }
-    public ICollection<TeacherClassroom> TeacherClassrooms { get; set; }
-    public ICollection<TeacherLesson> TeacherLessons { get; set; }
+    public ICollection<Role> Roles { get; set; } = new List<Role>();
+    public ICollection<Group> StudentGroups { get; set; } = new List<Group>();
+    public ICollection<Classroom> TeacherClassrooms { get; set; } = new List<Classroom>();
+    public ICollection<Lesson> TeacherLessons { get; set; } = new List<Lesson>();
 }
