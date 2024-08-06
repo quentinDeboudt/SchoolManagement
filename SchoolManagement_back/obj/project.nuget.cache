@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SS5/eJs1HdU=",
+  "dgSpecHash": "J1Ayk14p5VI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\school_calendar\\school_calendar_back\\school_calendar_back.csproj",
+  "projectFilePath": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\SchoolManagement\\SchoolManagement_back\\school_calendar_back.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dell\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.7\\microsoft.aspnetcore.openapi.8.0.7.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",

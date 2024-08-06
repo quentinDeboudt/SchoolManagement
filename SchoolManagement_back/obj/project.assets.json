@@ -465,11 +465,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\school_calendar\\school_calendar_back\\school_calendar_back.csproj",
+      "projectUniqueName": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\SchoolManagement\\SchoolManagement_back\\school_calendar_back.csproj",
       "projectName": "school_calendar_back",
-      "projectPath": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\school_calendar\\school_calendar_back\\school_calendar_back.csproj",
+      "projectPath": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\SchoolManagement\\SchoolManagement_back\\school_calendar_back.csproj",
       "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\school_calendar\\school_calendar_back\\obj\\",
+      "outputPath": "C:\\Users\\Dell\\Desktop\\code\\Angular-project\\SchoolManagement\\SchoolManagement_back\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config"
