@@ -1,8 +1,11 @@
-namespace Domain.Entities;
+namespace SchoolManagement.Domain.Entities;
 
 public class Group
 {
-    public Guid Id {get; set; }
-    public required string Name {get; set; }
-    public required string Classroom_Id {get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int ClassroomId { get; set; }
+    public Classroom Classroom { get; set; }
+    public ICollection<StudentGroup> StudentGroups { get; set; }
+    public ICollection<GroupClassroom> GroupClassrooms { get; set; }
 }
