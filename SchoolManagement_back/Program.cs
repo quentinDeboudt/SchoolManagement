@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Ajouter les services au conteneur.
 builder.Services.AddControllers(); // Ajoute les services de contrôleurs
 
+// services
+services.AddScoped<IPersonService, PersonService>();
+
 // Configurer DbContext avec SQL Server
 builder.Services.AddDbContext<SchoolManagementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
