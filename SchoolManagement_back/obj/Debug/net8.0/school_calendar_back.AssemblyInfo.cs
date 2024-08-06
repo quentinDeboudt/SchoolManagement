@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("school_calendar_back")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9404bb28d409cebfbfcc983764adc7e963204ffe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3aad1841e38e2d82d3a4a72b540540b0e456dc69")]
 [assembly: System.Reflection.AssemblyProductAttribute("school_calendar_back")]
 [assembly: System.Reflection.AssemblyTitleAttribute("school_calendar_back")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
