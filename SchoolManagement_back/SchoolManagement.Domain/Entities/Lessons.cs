@@ -1,9 +1,13 @@
 namespace SchoolManagement.Domain.Entities;
 
-public class Classroom
+public class Lesson
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public ICollection<GroupClassroom> GroupClassrooms { get; set; }
-    public ICollection<TeacherClassroom> TeacherClassrooms { get; set; }
+    public int SubjectId { get; set; }
+    public Subject Subject { get; set; }
+    public int TeacherId { get; set; }
+    public Person Teacher { get; set; }
+    public ICollection<TeacherLesson> TeacherLessons { get; set; }
+    public ICollection<LessonGroup> LessonGroups { get; set; }
+    public ICollection<LessonSubject> LessonSubjects { get; set; }
 }
