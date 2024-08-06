@@ -1,11 +1,29 @@
-SchoolManagement_back/bin/Debug/net8.0/school_calendar_back.dll
-SchoolManagement_back/bin/Debug/net8.0/school_calendar_back.exe
-SchoolManagement_back/bin/Debug/net8.0/school_calendar_back.pdb
-SchoolManagement_back/obj/Debug/net8.0/apphost.exe
-SchoolManagement_back/obj/Debug/net8.0/school_calendar_back.AssemblyInfo.cs
-SchoolManagement_back/obj/Debug/net8.0/school_calendar_back.AssemblyInfoInputs.cache
-SchoolManagement_back/obj/Debug/net8.0/school_calendar_back.dll
-SchoolManagement_back/obj/Debug/net8.0/school_calendar_back.pdb
-SchoolManagement_back/obj/Debug/net8.0/school_calendar_back.sourcelink.json
-SchoolManagement_back/obj/Debug/net8.0/ref/school_calendar_back.dll
-SchoolManagement_back/obj/Debug/net8.0/refint/school_calendar_back.dll
+# Fichiers générés par .NET
+bin/
+obj/
+
+# Fichiers temporaires de l'IDE
+*.user
+*.suo
+*.ncb
+*.sdf
+*.cache
+*.log
+*.dmp
+
+# Fichiers de build
+*.dll
+*.exe
+*.pdb
+
+# Autres
+*.csproj.user
+*.dbmdl
+*.bak
+
+# Fichiers de test
+*.coverage
+*.testresults
+
+# Dépendances
+packages/
