@@ -1,10 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Services;
+using SchoolManagement.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Ajouter les services au conteneur.
 builder.Services.AddControllers(); // Ajoute les services de contrôleurs
+
+// services
+builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IClassroomService, ClassroomService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
 // Configurer DbContext avec SQL Server
 builder.Services.AddDbContext<SchoolManagementDbContext>(options =>
