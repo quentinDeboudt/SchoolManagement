@@ -1,4 +1,36 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# Fichiers générés par .NET
+bin/
+obj/
+
+# Fichiers temporaires de l'IDE
+*.user
+*.suo
+*.ncb
+*.sdf
+*.cache
+*.log
+*.dmp
+
+# Fichiers de build
+*.dll
+*.exe
+*.pdb
+*.angular
+*node_modules
+
+
+# Autres
+*.csproj.user
+*.dbmdl
+*.bak
+
+# Fichiers de test
+*.coverage
+*.testresults
+
+# Dépendances
+packages/
+
 
 # Compiled output
 /dist
