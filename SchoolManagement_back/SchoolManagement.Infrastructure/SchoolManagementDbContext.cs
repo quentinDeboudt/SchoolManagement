@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Domain.Entities;
 
+namespace SchoolManagement.Infrastructure;
+
 public class SchoolManagementDbContext : DbContext
 {
     public DbSet<Person> Persons { get; set; }

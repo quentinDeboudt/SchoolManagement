@@ -1,8 +1,16 @@
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Infrastructure;
+using SchoolManagement.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+
+namespace SchoolManagement.Domain.Services;
+
 public class PersonService : IPersonService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly SchoolManagementDbContext _context;
 
-    public PersonService(ApplicationDbContext context)
+    public PersonService(SchoolManagementDbContext context)
     {
         _context = context;
     }

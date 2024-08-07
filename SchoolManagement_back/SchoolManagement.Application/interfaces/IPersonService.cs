@@ -1,3 +1,7 @@
+using SchoolManagement.Domain.Entities;
+
+namespace SchoolManagement.Application.Interfaces;
+
 public interface IPersonService
 {
     IEnumerable<Person> GetAll();
