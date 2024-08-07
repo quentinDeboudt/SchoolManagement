@@ -11,6 +11,11 @@ builder.Services.AddControllers(); // Ajoute les services de contrôleurs
 
 // services
 builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IClassroomService, ClassroomService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
 // Configurer DbContext avec SQL Server
 builder.Services.AddDbContext<SchoolManagementDbContext>(options =>
