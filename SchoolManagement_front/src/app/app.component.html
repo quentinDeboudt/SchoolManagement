@@ -1,1 +1,64 @@
-DashBoard
+<!-- Side Bar Container -->
+<mat-drawer-container class="side-bar-container">
+
+    <!-- Drawer content -->
+    <mat-drawer mode="side" opened class="side-bar-drawer-content">
+        <mat-grid-list cols="1" rowHeight="2:1">
+
+            <mat-grid-tile>
+                <button mat-flat-button class="btn-side-bar" routerLink="/dashboard">
+                    <mat-icon>poll</mat-icon>
+                    Dashboard
+                </button>
+            </mat-grid-tile>
+
+            <mat-grid-tile>  
+                <button mat-flat-button class="btn-side-bar" routerLink="/person">
+                    <mat-icon>person</mat-icon>
+                    Personnes
+                </button>
+            </mat-grid-tile>
+
+            <mat-grid-tile>
+                <button mat-flat-button class="btn-side-bar" routerLink="/group">
+                    <mat-icon>group</mat-icon>
+                    Groupes
+                </button>
+            </mat-grid-tile>
+
+            <mat-grid-tile>
+                <button mat-flat-button class="btn-side-bar" routerLink="/classroom">
+                    <mat-icon>location_city</mat-icon>
+                    Classes
+                </button>
+            </mat-grid-tile>
+
+            <mat-grid-tile>
+                <button mat-flat-button class="btn-side-bar" routerLink="/lesson">
+                    <mat-icon>business_center</mat-icon>
+                    Cours
+                </button>
+            </mat-grid-tile>
+
+            <mat-grid-tile>
+                <button mat-flat-button class="btn-side-bar" routerLink="/role">
+                    <mat-icon>local_offer</mat-icon>
+                    Rôles
+                </button>
+            </mat-grid-tile>
+        </mat-grid-list>
+        
+    </mat-drawer>
+
+    <!-- Main content -->
+    <mat-drawer-content class="side-bar-main-content">
+        <!-- Nav-Bar -->
+        <mat-toolbar class="nav-bar">
+            <mat-icon>person</mat-icon>
+            <span>Bonjour Quentin</span>
+        </mat-toolbar>
+        
+        <router-outlet></router-outlet>
+
+    </mat-drawer-content>
+</mat-drawer-container>
