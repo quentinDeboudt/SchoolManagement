@@ -1,5 +1,4 @@
 <div class="header-table">
-
     <!-- Search part -->
     <div>
         <mat-form-field class="example-full-width">
@@ -15,7 +14,7 @@
 
 <div class="table">
     <app-generic-table
-        [columns]="['firstName', 'lastName']"
-        [data$]="persons$">
+        [columns]="['id', 'name']"
+        [data$]="roles$">
     </app-generic-table>
 </div>

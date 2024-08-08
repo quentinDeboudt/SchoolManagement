@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { GenericTableComponent } from '../generic/generic-table/generic-table.component';
 import { Person } from '../../models/person.model';
 import { PersonService } from '../../service/person.service';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-person',
@@ -15,23 +17,24 @@ import { PersonService } from '../../service/person.service';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    GenericTableComponent
+    GenericTableComponent,
+    AsyncPipe
   ],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss'
 })
-export class PersonComponent implements OnInit{
+export class PersonComponent implements OnInit {
 
-  persons: Person[] = [];
+  public persons$!: Observable<Person[]>;
 
   constructor(private personService: PersonService) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getPersons();
   }
 
-  getPersons(): void {
-    this.personService.getPersons().subscribe(persons => this.persons = persons);
+  public getPersons(): void {
+    this.persons$ = this.personService.getPersons();
   }
 }
