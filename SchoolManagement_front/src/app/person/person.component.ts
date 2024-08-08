@@ -25,7 +25,6 @@ export class PersonComponent implements OnInit{
   persons: Person[] = [];
 
   constructor(private personService: PersonService) {
-    console.log(this.persons);
   }
 
   ngOnInit(): void {

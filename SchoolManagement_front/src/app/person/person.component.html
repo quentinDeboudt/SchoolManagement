@@ -14,5 +14,8 @@
 </div>
 
 <div class="table">
-    <app-generic-table ></app-generic-table>
+    <app-generic-table
+        [columns]="['firstName', 'lastName']"
+        [data]="persons">
+    </app-generic-table>
 </div>
