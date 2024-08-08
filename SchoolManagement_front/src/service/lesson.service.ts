@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Classroom } from '../models/classroom.model';
+import { Lesson } from '../models/lesson.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClassroomService {
+export class LessonService {
 
-  private apiUrl = 'http://localhost:5034/api/Classroom';
+  private apiUrl = 'http://localhost:5034/api/lesson';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -16,8 +16,8 @@ export class ClassroomService {
 
   constructor(private http: HttpClient) { }
 
-  public getClassroom(): Observable<Classroom[]> {
-    return this.http.get<Classroom[]>(this.apiUrl);
+  public getLesson(): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>(this.apiUrl);
   }
 
 }
