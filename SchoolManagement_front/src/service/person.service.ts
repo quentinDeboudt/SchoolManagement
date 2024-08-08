@@ -16,8 +16,7 @@ export class PersonService {
 
   constructor(private http: HttpClient) { }
 
-  /** GET: obtenir toutes les personnes */
-  getPersons(): Observable<Person[]> {
+  public getPersons(): Observable<Person[]> {
     return this.http.get<Person[]>(this.apiUrl);
   }
 
