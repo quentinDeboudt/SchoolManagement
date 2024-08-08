@@ -1,15 +1,15 @@
+import { Group } from '../../models/group.model';
+import { Observable } from 'rxjs';
+import { GroupService } from '../../service/group.service';
 import { Component, OnInit } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { GenericTableComponent } from '../generic/generic-table/generic-table.component';
-import { Person } from '../../models/person.model';
-import { PersonService } from '../../service/person.service';
-import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-person',
+  selector: 'app-group',
   standalone: true,
   imports: [
     MatGridListModule,
@@ -18,21 +18,21 @@ import { Observable } from 'rxjs';
     MatButtonModule,
     GenericTableComponent
   ],
-  templateUrl: './person.component.html',
-  styleUrl: './person.component.scss'
+  templateUrl: './group.component.html',
+  styleUrl: './group.component.scss'
 })
-export class PersonComponent implements OnInit {
+export class GroupComponent implements OnInit{
 
-  public persons$!: Observable<Person[]>;
+  public group$!: Observable<Group[]>;
 
-  constructor(private personService: PersonService) {
+  constructor(private groupService: GroupService) {
   }
 
   public ngOnInit(): void {
-    this.getPersons();
+    this.getGroup();
   }
 
-  public getPersons(): void {
-    this.persons$ = this.personService.getPersons();
+  public getGroup(): void {
+    this.group$ = this.groupService.getGroup();
   }
 }

@@ -6,6 +6,17 @@ using SchoolManagement.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Ajouter les services au conteneur.
 builder.Services.AddControllers(); // Ajoute les services de contrôleurs
 
@@ -37,6 +48,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SchoolManagementAPI v1"));
 }
+app.UseCors("AllowAngularApp");
 
 app.UseHttpsRedirection();
 
