@@ -54,8 +54,26 @@
     <mat-drawer-content class="side-bar-main-content">
         <!-- Nav-Bar -->
         <mat-toolbar class="nav-bar">
-            <mat-icon>person</mat-icon>
-            <span>Bonjour Quentin</span>
+            <div>
+                <h2>Dashboard</h2>
+            </div>
+            <div>
+                <button mat-raised-button [matMenuTriggerFor]="menu">
+                    <mat-icon>person</mat-icon>
+                    <span>Quentin.D</span>
+                    <mat-icon>keyboard_arrow_down</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+                        <mat-icon>settings</mat-icon>
+                        <p>params</p>
+                    </button>
+                    <button mat-menu-item>
+                        <mat-icon>power_settings_new</mat-icon>
+                        <p>déconection</p>
+                    </button>
+                </mat-menu>
+            </div>
         </mat-toolbar>
         
         <router-outlet></router-outlet>
