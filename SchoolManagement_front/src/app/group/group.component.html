@@ -1,0 +1,21 @@
+<div class="header-table">
+
+    <!-- Search part -->
+    <div>
+        <mat-form-field class="example-full-width">
+            <mat-label>Nom, Prénom..</mat-label>
+            <input matInput placeholder="Search">
+        </mat-form-field>
+
+        <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+        </button>
+    </div>
+</div>
+
+<div class="table">
+    <app-generic-table
+        [columns]="['id', 'name', 'classroom']"
+        [data$]="group$">
+    </app-generic-table>
+</div>
