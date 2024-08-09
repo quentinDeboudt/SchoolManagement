@@ -5,6 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgForOf } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
+import { ObjectToTextPipe } from '../../pipe/object-to-text-pipe.pipe';
 
 @Component({
   selector: 'app-generic-table',
@@ -14,7 +15,8 @@ import { Observable, Subscription } from 'rxjs';
     MatSortModule,
     MatPaginator,
     MatPaginatorModule,
-    NgForOf
+    NgForOf,
+    ObjectToTextPipe
   ],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss'
@@ -31,19 +33,6 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.displayedColumns = this.columns;
-    this.data$.subscribe(data => {
-      this.dataSource.data = data || [];
-    });
-  }
-
-  public ngAfterViewInit(): void {
-    this.displayedColumns = this.columns;
-
-    this.subscription = this.data$.subscribe(data => {
-      this.dataSource.data = data || [];
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
   }
 
   public ngOnDestroy(): void {
