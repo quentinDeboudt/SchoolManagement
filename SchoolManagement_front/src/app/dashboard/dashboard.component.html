@@ -1,8 +1,9 @@
 <!-- First Part -->
-<mat-grid-list cols="4" rowHeight="2:1">
+ <div class="Container-dashboard">
+<mat-grid-list cols="4" rowHeight="16vh" class="mat-grid" >
 
     <mat-grid-tile>
-        <mat-card appearance="outlined">
+        <mat-card appearance="raised">
             <mat-card-header><mat-icon>domain</mat-icon></mat-card-header>
             <mat-card-content>Nombre moyen d'éleves par class:</mat-card-content>
             <mat-card-content>26</mat-card-content>
@@ -10,7 +11,7 @@
     </mat-grid-tile>
 
     <mat-grid-tile>
-        <mat-card appearance="outlined">
+        <mat-card appearance="raised">
             <mat-card-header><mat-icon>supervised_user_circle</mat-icon></mat-card-header>
             <mat-card-content>Nombre total d'élèves:</mat-card-content>
             <mat-card-content>470</mat-card-content>
@@ -18,7 +19,7 @@
     </mat-grid-tile>
 
     <mat-grid-tile>
-        <mat-card appearance="outlined">
+        <mat-card appearance="raised">
             <mat-card-header><mat-icon>supervisor_account</mat-icon></mat-card-header>
             <mat-card-content>Nombre total de professeurs:</mat-card-content>
             <mat-card-content>48</mat-card-content>
@@ -26,7 +27,7 @@
     </mat-grid-tile>
 
     <mat-grid-tile>
-        <mat-card appearance="outlined">
+        <mat-card appearance="raised">
             <mat-card-header><mat-icon>domain</mat-icon></mat-card-header>
             <mat-card-content>Nombre de classes:</mat-card-content>
             <mat-card-content>258</mat-card-content>
@@ -34,3 +35,73 @@
     </mat-grid-tile>
     
 </mat-grid-list>
+
+<!-- Seconde Part -->
+<mat-grid-list cols="8" rowHeight="36vh" class="mat-grid">
+
+    <mat-grid-tile [colspan]="2" [rowspan]="1">
+        <mat-card appearance="raised">
+            <mat-card-content>
+                <mat-card-header>Homme</mat-card-header>
+                <mat-progress-spinner
+                    class="example-margin"
+                    [mode]='"determinate"'
+                    [value]="60">
+                </mat-progress-spinner>
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+        <mat-card appearance="raised">
+            <mat-card-header><mat-icon>supervised_user_circle</mat-icon></mat-card-header>
+            <mat-card-content>Avancement de l'année scolaire:</mat-card-content>
+            <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+            (40%)
+        </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+        <mat-card appearance="raised">
+            <mat-card-header><mat-icon>supervisor_account</mat-icon></mat-card-header>
+            <mat-card-content>Nombre total de professeurs:</mat-card-content>
+            <mat-card-content>48</mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+</mat-grid-list>
+
+<!-- Last Part -->
+<mat-grid-list cols="8" rowHeight="36vh" class="mat-grid">
+
+    <mat-grid-tile [colspan]="2" [rowspan]="1">
+        <mat-card appearance="raised">
+            <mat-card-content >
+                <mat-card-header>Femme</mat-card-header>
+                <mat-progress-spinner
+                class="example-margin"
+                [mode]='"determinate"'
+                [value]="40">
+            </mat-progress-spinner>
+
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+        <mat-card appearance="raised">
+            <mat-card-header><mat-icon>supervised_user_circle</mat-icon></mat-card-header>
+            <mat-card-content>Avancement de l'année scolaire:</mat-card-content>
+            <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+            (40%)
+        </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+        <mat-card appearance="raised">
+            <mat-card-header><mat-icon>supervisor_account</mat-icon></mat-card-header>
+            <mat-card-content>Nombre total de professeurs:</mat-card-content>
+            <mat-card-content>48</mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
+</mat-grid-list>
+</div>
