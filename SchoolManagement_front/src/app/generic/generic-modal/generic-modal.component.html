@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>+ Add {{ data.entityName }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="entityForm">
+    <div *ngFor="let field of data.fields">
+      <mat-form-field class="full-width">
+        <mat-label>{{ field.label }}</mat-label>
+        <input matInput [formControlName]="field.formControlName" [type]="field.type">
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="entityForm.value" [disabled]="!entityForm.valid" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

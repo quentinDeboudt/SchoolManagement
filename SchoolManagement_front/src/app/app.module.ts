@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PersonComponent } from './person/person.component';
 import { routes } from './app.routes';
+import { GenericModalComponent } from './generic/generic-modal/generic-modal.component';
 
 @NgModule({
   declarations: [ ],
@@ -14,7 +15,8 @@ import { routes } from './app.routes';
     MatButtonModule,
     AppComponent,
     DashboardComponent,
-    PersonComponent, 
+    PersonComponent,
+    GenericModalComponent,
     RouterModule.forRoot(routes)
   ],
   bootstrap: []
