@@ -12,8 +12,8 @@ import { NgFor } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 
 interface DialogData {
-  entityName: string; // Nom de l'entité (ex: Person, Classroom, Group)
-  fields: Array<{ label: string, formControlName: string, type: string }>; // Configuration des champs du formulaire
+  entityName: string;
+  fields: Array<{ label: string, formControlName: string, type: string }>;
 }
 
 @Component({

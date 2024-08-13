@@ -35,4 +35,5 @@ export class GroupComponent implements OnInit{
   public getGroup(): void {
     this.group$ = this.groupService.getGroup();
   }
+
 }
