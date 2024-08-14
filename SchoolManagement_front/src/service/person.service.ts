@@ -23,4 +23,8 @@ export class PersonService {
     return this.http.post<Person[]>(this.apiUrl, person);
   }
 
+  public deletePerson(person: Person) {
+    return this.http.delete<Person[]>(this.apiUrl+`/${person}`);
+  }
+
 }

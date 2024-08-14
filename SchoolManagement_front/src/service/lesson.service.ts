@@ -7,7 +7,6 @@ import { Lesson } from '../models/lesson.model';
   providedIn: 'root'
 })
 export class LessonService {
-
   private apiUrl = 'http://localhost:5034/api/lesson';
 
   httpOptions = {
@@ -18,6 +17,10 @@ export class LessonService {
 
   public getLesson(): Observable<Lesson[]> {
     return this.http.get<Lesson[]>(this.apiUrl);
+  }
+
+  createLesson(lesson: Lesson) {
+    return this.http.post<Lesson[]>(this.apiUrl, lesson);
   }
 
 }

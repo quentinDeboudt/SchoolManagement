@@ -9,6 +9,8 @@
 <div class="table">
     <app-generic-table
         [columns]="['firstName', 'lastName']"
-        [data$]="persons$">
+        [data$]="persons$"
+        (deleteEntity)="delete($event)"
+        >
     </app-generic-table>
 </div>

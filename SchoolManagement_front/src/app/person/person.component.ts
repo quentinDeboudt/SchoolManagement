@@ -25,7 +25,7 @@ import { GenericModalComponent } from '../generic/generic-modal/generic-modal.co
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss'
 })
-export class PersonComponent implements OnInit {  
+export class PersonComponent implements OnInit {
   public persons$!: Observable<Person[]>;
   readonly dialog = inject(MatDialog);
   public headerData = "Nom, Prénom...";
@@ -46,8 +46,8 @@ export class PersonComponent implements OnInit {
       data: {
         entityName: 'Person',
         fields: [
-          { label: 'First Name', formControlName: 'firstName', type: 'text' },
-          { label: 'Last Name', formControlName: 'lastName', type: 'text' },
+          { label: 'Prénom', formControlName: 'firstName', type: 'text' },
+          { label: 'Nom', formControlName: 'lastName', type: 'text' },
         ]
       }
     });
@@ -63,5 +63,9 @@ export class PersonComponent implements OnInit {
         
       }
     });
+  }
+
+  public delete(person: Person) {
+   this.personService.deletePerson(person);
   }
 }
