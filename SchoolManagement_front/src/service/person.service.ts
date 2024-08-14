@@ -19,8 +19,8 @@ export class PersonService {
     return this.http.get<Person[]>(this.apiUrl);
   }
 
-  public createPerson(result: any) {
-    throw new Error('Method not implemented.');
+  public createPerson(person: Person) {
+    return this.http.post<Person[]>(this.apiUrl, person);
   }
 
 }

@@ -7,8 +7,9 @@ import { GenericTableComponent } from '../generic/generic-table/generic-table.co
 import { Person } from '../../models/person.model';
 import { PersonService } from '../../service/person.service';
 import { Observable } from 'rxjs';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { GenericHeaderComponent } from "../generic/generic-header/generic-header.component";
 import { GenericModalComponent } from '../generic/generic-modal/generic-modal.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-person',
@@ -18,17 +19,19 @@ import { MatDialog } from '@angular/material/dialog';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    GenericTableComponent
-  ],
+    GenericTableComponent,
+    GenericHeaderComponent
+],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss'
 })
 export class PersonComponent implements OnInit {  
   public persons$!: Observable<Person[]>;
   readonly dialog = inject(MatDialog);
-
-  constructor(private personService: PersonService) {
-  }
+  public headerData = "Nom, Prénom...";
+  public icon = "person_add";
+  
+  constructor(private personService: PersonService) { }
 
   public ngOnInit(): void {
     this.getPersons();
@@ -38,23 +41,26 @@ export class PersonComponent implements OnInit {
     this.persons$ = this.personService.getPersons();
   }
 
-  addPerson(): void {
+  public addEntity(): void {
     const dialogRef = this.dialog.open(GenericModalComponent, {
       data: {
         entityName: 'Person',
         fields: [
           { label: 'First Name', formControlName: 'firstName', type: 'text' },
-          { label: 'Last Name', formControlName: 'lastName', type: 'text' }
+          { label: 'Last Name', formControlName: 'lastName', type: 'text' },
         ]
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log("Result!!!!!!!!!!")
-        // this.personService.createPerson(result).subscribe(() => {
-        //   this.getPersons(); // Rafraîchir la liste des personnes après l'ajout
-        // });
+    dialogRef.afterClosed().subscribe(perosn => {
+      if (perosn) {
+        console.log("Result: ", perosn)
+        this.personService.createPerson(perosn).subscribe(
+          ()=>{
+            this.getPersons();
+          }
+        )
+        
       }
     });
   }

@@ -1,0 +1,17 @@
+<div class="header-table">
+    <div>
+        <mat-form-field>
+            <mat-label>{{headerData}}</mat-label>
+            <input matInput placeholder="Search">
+        </mat-form-field>
+        
+        <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+        </button>
+    </div>
+
+    <button mat-flat-button (click)="addEntity()">
+        <span>Ajouter</span>
+        <mat-icon>{{icon}}</mat-icon>
+    </button>
+</div>
