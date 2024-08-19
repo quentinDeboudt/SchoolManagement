@@ -41,10 +41,10 @@ export class PersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getPersons(this.pageEvent);
+    this.totalItems$ = this.personService.count();
   }
 
   public getPersons(pageEvent: PageEvent): void {
-    this.totalItems$ = this.personService.count();
     this.persons$ = this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize);
   }
 
