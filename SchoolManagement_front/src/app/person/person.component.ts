@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { GenericHeaderComponent } from "../generic/generic-header/generic-header.component";
 import { GenericModalComponent } from '../generic/generic-modal/generic-modal.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-person',
@@ -30,15 +31,21 @@ export class PersonComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   public headerData = "Nom, Prénom...";
   public icon = "person_add";
+  public pageEvent = new PageEvent();
+  public totalItems$!: Observable<number>;
   
-  constructor(private personService: PersonService) { }
-
-  public ngOnInit(): void {
-    this.getPersons();
+  constructor(private personService: PersonService) {
+    this.pageEvent.pageIndex = 0;
+    this.pageEvent.pageSize = 10;
   }
 
-  public getPersons(): void {
-    this.persons$ = this.personService.getPersons();
+  public ngOnInit(): void {
+    this.getPersons(this.pageEvent);
+  }
+
+  public getPersons(pageEvent: PageEvent): void {
+    this.totalItems$ = this.personService.count();
+    this.persons$ = this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize);
   }
 
   public addEntity(): void {
@@ -57,7 +64,7 @@ export class PersonComponent implements OnInit {
         console.log("Result: ", perosn)
         this.personService.createPerson(perosn).subscribe(
           ()=>{
-            this.getPersons();
+            this.getPersons(this.pageEvent);
           }
         )
         

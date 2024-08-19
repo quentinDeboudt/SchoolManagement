@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Person } from '../models/person.model';
 
@@ -15,8 +15,12 @@ export class PersonService {
 
   constructor(private http: HttpClient) { }
 
-  public getPersons(): Observable<Person[]> {
-    return this.http.get<Person[]>(this.apiUrl);
+  public count() {
+    return this.http.get<number>(this.apiUrl+`/count`);
+  }
+
+  public getPersons(pageNumber: number, pageSize: number): Observable<Person[]>{
+    return this.http.get<Person[]>(`${this.apiUrl}/pagination?pageNumber= ${pageNumber}&pageSize=${pageSize}`);
   }
 
   public createPerson(person: Person) {

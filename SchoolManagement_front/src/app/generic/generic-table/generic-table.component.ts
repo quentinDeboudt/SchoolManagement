@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { NgForOf } from '@angular/common';
+import { AsyncPipe, NgForOf } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
 import { ObjectToTextPipe } from '../../pipe/object-to-text-pipe.pipe';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,7 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
     NgForOf,
     ObjectToTextPipe,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    AsyncPipe
   ],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss'
@@ -28,8 +29,10 @@ import { MatButtonModule } from '@angular/material/button';
 export class GenericTableComponent<T> implements OnInit, OnDestroy {
   @Input() columns: string[] = [];
   @Input() data$!: Observable<T[]>;
+  @Input() totalItems$!: Observable<number>;
   @Output('deleteEntity') deleteEntity = new EventEmitter<T>();
   @Output('editEntity') editEntity = new EventEmitter<T>();
+  @Output('pageChange') pageChange = new EventEmitter<PageEvent>();
 
   private subscription!: Subscription;
   public displayedColumns: string[] = [];
@@ -52,6 +55,10 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  public onPageChange($event: PageEvent) {
+    this.pageChange.emit($event);
   }
 
   public delete(element: T) {

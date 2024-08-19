@@ -9,10 +9,16 @@ namespace SchoolManagement.Domain.Services;
 public class PersonService : IPersonService
 {
     private readonly SchoolManagementDbContext _context;
+    private readonly PageEvent PageEvent;
 
     public PersonService(SchoolManagementDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<int> CountAsync()
+    {
+        return await _context.Persons.CountAsync();
     }
 
     public IEnumerable<Person> GetAll()
@@ -23,6 +29,14 @@ public class PersonService : IPersonService
             .Include(p => p.TeacherClassrooms)
             .Include(p => p.TeacherLessons)
             .ToList();
+    }
+
+    public Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
+    {
+        return _context.Persons
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
 
     public Person GetById(int id)

@@ -10,8 +10,10 @@
     <app-generic-table
         [columns]="['firstName', 'lastName']"
         [data$]="persons$"
+        [totalItems$]="totalItems$"
         (deleteEntity)="deletePerson($event)"
         (editEntity)="editPerson($event)"
+        (pageChange)="getPersons($event)"
         >
     </app-generic-table>
 </div>

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Application.Interfaces;
-
+using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -14,11 +14,25 @@ public class PersonController : ControllerBase
         _personService = personService;
     }
 
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> GetPersonsCount()
+    {
+        var count = await _personService.CountAsync();
+        return Ok(count);
+    }
+
     [HttpGet]
     public ActionResult<IEnumerable<Person>> GetAll()
     {
         var persons = _personService.GetAll();
         return Ok(persons);
+    }
+
+    [HttpGet("pagination")]
+    public Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
+    {
+        var persons = _personService.GetWithPagination(pageNumber, pageSize);
+        return persons;
     }
 
     [HttpGet("{id}")]
