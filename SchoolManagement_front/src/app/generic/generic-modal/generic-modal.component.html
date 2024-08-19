@@ -12,6 +12,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="entityForm.value" [disabled]="!entityForm.valid" cdkFocusInitial>Ok</button>
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-button [mat-dialog-close]="entityForm.value" [disabled]="!entityForm.valid" cdkFocusInitial>Enregistrer</button>
 </mat-dialog-actions>

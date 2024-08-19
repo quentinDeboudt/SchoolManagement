@@ -65,7 +65,13 @@ export class PersonComponent implements OnInit {
     });
   }
 
-  public delete(person: Person) {
+  public deletePerson(person: Person) {
    this.personService.deletePerson(person);
   }
+
+  public editPerson(person: Person) {
+    this.personService.editPerson(person);
+  }
+
+  
 }

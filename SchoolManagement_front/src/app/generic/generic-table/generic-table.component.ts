@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -28,17 +28,24 @@ import { MatButtonModule } from '@angular/material/button';
 export class GenericTableComponent<T> implements OnInit, OnDestroy {
   @Input() columns: string[] = [];
   @Input() data$!: Observable<T[]>;
+  @Output('deleteEntity') deleteEntity = new EventEmitter<T>();
+  @Output('editEntity') editEntity = new EventEmitter<T>();
+
   private subscription!: Subscription;
   public displayedColumns: string[] = [];
+  public allColums: string[] = [];
   public dataSource = new MatTableDataSource<T>();
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  @Output('deleteEntity') deleteEntity = new EventEmitter<T>(); 
-
-
   public ngOnInit(): void {
     this.displayedColumns = this.columns;
+
+    this.displayedColumns.forEach(element => {
+      this.allColums.push(element)
+    });
+    this.allColums.push("action");
   }
 
   public ngOnDestroy(): void {
@@ -47,11 +54,11 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
     }
   }
 
-  public delete(entity: T) {
-    this.deleteEntity.emit(entity);
+  public delete(element: T) {
+    this.deleteEntity.emit(element);
   }
 
-  public Edit(entity: T) {
-    throw new Error('Method not implemented.');
+  public edit(element: T) {
+    this.editEntity.emit(element);
   }
 }

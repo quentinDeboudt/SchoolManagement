@@ -10,6 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NgFor } from '@angular/common';
 import { MatInput } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 interface DialogData {
   entityName: string;
@@ -27,6 +28,7 @@ interface DialogData {
     MatFormField,
     MatLabel,
     MatInput,
+    MatButtonModule,
     ReactiveFormsModule,
     NgFor
   ],
