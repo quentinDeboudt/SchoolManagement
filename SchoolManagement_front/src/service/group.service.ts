@@ -7,7 +7,6 @@ import { Group } from '../models/group.model';
   providedIn: 'root'
 })
 export class GroupService {
-
   private apiUrl = 'http://localhost:5034/api/Group';
 
   httpOptions = {
@@ -18,6 +17,10 @@ export class GroupService {
 
   public getGroup(): Observable<Group[]> {
     return this.http.get<Group[]>(this.apiUrl);
+  }
+
+  public createGroup(group: Group) {
+    return this.http.post<Group[]>(this.apiUrl, group);
   }
 
 }

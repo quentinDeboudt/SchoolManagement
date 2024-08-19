@@ -7,7 +7,6 @@ import { Person } from '../models/person.model';
   providedIn: 'root'
 })
 export class PersonService {
-
   private apiUrl = 'http://localhost:5034/api/Person';
 
   httpOptions = {
@@ -18,6 +17,18 @@ export class PersonService {
 
   public getPersons(): Observable<Person[]> {
     return this.http.get<Person[]>(this.apiUrl);
+  }
+
+  public createPerson(person: Person) {
+    return this.http.post<Person[]>(this.apiUrl, person);
+  }
+
+  public deletePerson(person: Person) {
+    return this.http.delete<Person[]>(this.apiUrl+`/${person}`);
+  }
+
+  public editPerson(person: Person) {
+    return this.http.put<Person[]>(this.apiUrl, person);
   }
 
 }

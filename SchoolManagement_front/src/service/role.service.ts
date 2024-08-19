@@ -7,7 +7,6 @@ import { Role } from '../models/role.model';
   providedIn: 'root'
 })
 export class RoleService {
-
   private apiUrl = 'http://localhost:5034/api/Role';
 
   httpOptions = {
@@ -19,6 +18,10 @@ export class RoleService {
   /** GET: obtenir toutes les personnes */
   getRoles(): Observable<Role[]> {
     return this.http.get<Role[]>(this.apiUrl);
+  }
+
+  createRole(role: Role) {
+    return this.http.post<Role[]>(this.apiUrl, role);
   }
 
 }

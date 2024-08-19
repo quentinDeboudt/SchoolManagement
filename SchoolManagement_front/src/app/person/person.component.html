@@ -1,21 +1,17 @@
-<div class="header-table">
-
-    <!-- Search part -->
-    <div>
-        <mat-form-field class="example-full-width">
-            <mat-label>Nom, Prénom..</mat-label>
-            <input matInput placeholder="Search">
-        </mat-form-field>
-
-        <button mat-icon-button>
-            <mat-icon>search</mat-icon>
-        </button>
-    </div>
+<div>
+    <app-generic-header
+        [headerData]="headerData"
+        [icon]="icon"
+        (openedModal)="addEntity()">
+    </app-generic-header>
 </div>
 
 <div class="table">
     <app-generic-table
         [columns]="['firstName', 'lastName']"
-        [data$]="persons$">
+        [data$]="persons$"
+        (deleteEntity)="deletePerson($event)"
+        (editEntity)="editPerson($event)"
+        >
     </app-generic-table>
 </div>
