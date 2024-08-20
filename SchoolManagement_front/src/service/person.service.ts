@@ -15,7 +15,7 @@ export class PersonService {
 
   constructor(private http: HttpClient) { }
 
-  public count() {
+  public count(){
     return this.http.get<number>(this.apiUrl+`/count`);
   }
 

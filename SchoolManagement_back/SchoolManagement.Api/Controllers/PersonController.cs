@@ -54,11 +54,21 @@ public class PersonController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = person.Id }, person);
     }
 
-    [HttpPut("{id}")]
-    public ActionResult Update(int id, [FromBody] Person person)
+    [HttpPut]
+    public async Task<IActionResult> UpdatePerson([FromBody] Person person)
     {
-        _personService.Update(id, person);
-        return NoContent();
+        if (person == null || person.Id <= 0)
+        {
+            return BadRequest("Invalid person data");
+        }
+
+        var updatedPerson = await _personService.UpdatePersonAsync(person);
+        if (updatedPerson == null)
+        {
+            return NotFound("Person not found");
+        }
+
+        return Ok(updatedPerson);
     }
 
     [HttpDelete("{id}")]

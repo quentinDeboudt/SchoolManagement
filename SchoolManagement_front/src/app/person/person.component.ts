@@ -7,7 +7,7 @@ import { GenericTableComponent } from '../generic/generic-table/generic-table.co
 import { Person } from '../../models/person.model';
 import { PersonService } from '../../service/person.service';
 import { Observable } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { GenericHeaderComponent } from "../generic/generic-header/generic-header.component";
 import { GenericModalComponent } from '../generic/generic-modal/generic-modal.component';
 import { PageEvent } from '@angular/material/paginator';
@@ -28,15 +28,22 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class PersonComponent implements OnInit {
   public persons$!: Observable<Person[]>;
+  public totalItems$!: Observable<number>;
+  
+  public pageEvent = new PageEvent();
   readonly dialog = inject(MatDialog);
+
   public headerData = "Nom, Prénom...";
   public icon = "person_add";
-  public pageEvent = new PageEvent();
-  public totalItems$!: Observable<number>;
+  public fieldsModal = [
+    { label: 'Prénom', formControlName: 'firstName', type: 'text' },
+    { label: 'Nom', formControlName: 'lastName', type: 'text' },
+  ]
+
   
   constructor(private personService: PersonService) {
     this.pageEvent.pageIndex = 0;
-    this.pageEvent.pageSize = 10;
+    this.pageEvent.pageSize = 5;
   }
 
   public ngOnInit(): void {
@@ -44,30 +51,30 @@ export class PersonComponent implements OnInit {
     this.totalItems$ = this.personService.count();
   }
 
+  public openDialog(person?: Person): any {
+    const dialogRef = this.dialog.open(GenericModalComponent, {
+      data: {
+        entityName: 'Person',
+        fields: this.fieldsModal,
+        value: person
+      }
+    });
+
+    return dialogRef.afterClosed();
+  }
+
   public getPersons(pageEvent: PageEvent): void {
     this.persons$ = this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize);
   }
 
-  public addEntity(): void {
-    const dialogRef = this.dialog.open(GenericModalComponent, {
-      data: {
-        entityName: 'Person',
-        fields: [
-          { label: 'Prénom', formControlName: 'firstName', type: 'text' },
-          { label: 'Nom', formControlName: 'lastName', type: 'text' },
-        ]
-      }
-    });
+  public addPerson(): void {
 
-    dialogRef.afterClosed().subscribe(perosn => {
-      if (perosn) {
-        console.log("Result: ", perosn)
-        this.personService.createPerson(perosn).subscribe(
-          ()=>{
-            this.getPersons(this.pageEvent);
-          }
-        )
-        
+    this.openDialog().subscribe((person: Person) => {
+      if (person) {
+        this.personService.createPerson(person).subscribe({
+          error: (e) => console.error(e),
+          complete: () => this.getPersons(this.pageEvent)
+        });
       }
     });
   }
@@ -77,7 +84,17 @@ export class PersonComponent implements OnInit {
   }
 
   public editPerson(person: Person) {
-    this.personService.editPerson(person);
+    console.log("after-update: ", person)
+
+    this.openDialog(person).subscribe((person: Person) => {
+      if (person) {
+        console.log("update: ", person)
+        this.personService.editPerson(person).subscribe({
+          error: (e) => console.error(e),
+          complete: () => this.getPersons(this.pageEvent)
+        });
+      }
+    });
   }
 
   

@@ -9,7 +9,7 @@ public interface IPersonService
     Task<List<Person>> GetWithPagination(int pageNumber, int pageSize);
     Person GetById(int id);
     void Create(Person person);
-    void Update(int id, Person person);
+    Task<Person> UpdatePersonAsync(Person person);
     void Delete(int id);
     Task<int> CountAsync();
 }

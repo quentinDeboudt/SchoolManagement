@@ -9,7 +9,6 @@ namespace SchoolManagement.Domain.Services;
 public class PersonService : IPersonService
 {
     private readonly SchoolManagementDbContext _context;
-    private readonly PageEvent PageEvent;
 
     public PersonService(SchoolManagementDbContext context)
     {
@@ -55,10 +54,13 @@ public class PersonService : IPersonService
         _context.SaveChanges();
     }
 
-    public void Update(int id, Person person)
+    public async Task<Person> UpdatePersonAsync(Person person)
     {
-        var existingPerson = _context.Persons.Find(id);
-        if (existingPerson == null) return;
+        var existingPerson = await _context.Persons.FindAsync(person.Id);
+        if (existingPerson == null)
+        {
+            return null;
+        }
 
         existingPerson.FirstName = person.FirstName;
         existingPerson.LastName = person.LastName;
@@ -66,7 +68,11 @@ public class PersonService : IPersonService
         existingPerson.StudentGroups = person.StudentGroups;
         existingPerson.TeacherClassrooms = person.TeacherClassrooms;
         existingPerson.TeacherLessons = person.TeacherLessons;
-        _context.SaveChanges();
+
+        _context.Persons.Update(existingPerson);
+        await _context.SaveChangesAsync();
+
+        return existingPerson;
     }
 
     public void Delete(int id)

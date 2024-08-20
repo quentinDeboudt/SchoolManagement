@@ -12,9 +12,17 @@ import { NgFor } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
+
 interface DialogData {
   entityName: string;
-  fields: Array<{ label: string, formControlName: string, type: string }>;
+  fields: Field[];
+  value: any;
+}
+
+export interface Field {
+  label: string;
+  formControlName: string;
+  type: string;
 }
 
 @Component({
@@ -46,20 +54,34 @@ export class GenericModalComponent implements OnInit {
     this.entityForm = this.fb.group({});
   }
 
-  ngOnInit(): void {
+  /**
+   * This method sets up the form group by iterating over the fields provided in the data.
+   * If a value is provided for a field, it is set as the initial,
+   * otherwise, the control is initialized with an empty string.
+   */
+  public ngOnInit(): void {
     this.data.fields.forEach(field => {
-      this.entityForm.addControl(field.formControlName, this.fb.control('', Validators.required));
+      const fieldValue = this.data.value ? this.data.value[field.formControlName] : '';
+      this.entityForm.addControl(
+        field.formControlName,
+        this.fb.control(fieldValue, Validators.required)
+      );
     });
   }
 
-  onCancel(): void {
+  /**
+   * Closes the dialog without saving any changes.
+   */
+  public onCancel(): void {
     this.dialogRef.close();
   }
 
-  onSubmit(): void {
+  /**
+   * Submits the form data.
+   */
+  public onSubmit(): void {
     if (this.entityForm.valid) {
       this.dialogRef.close(this.entityForm.value);
     }
   }
 }
-

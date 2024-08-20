@@ -5,7 +5,7 @@
     <div *ngFor="let field of data.fields">
       <mat-form-field class="full-width">
         <mat-label>{{ field.label }}</mat-label>
-        <input matInput [formControlName]="field.formControlName" [type]="field.type">
+        <input matInput cdkFocusInitial [formControlName]="field.formControlName" [type]="field.type">
       </mat-form-field>
     </div>
   </form>

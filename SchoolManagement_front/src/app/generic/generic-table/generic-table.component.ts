@@ -21,7 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
     ObjectToTextPipe,
     MatIconModule,
     MatButtonModule,
-    AsyncPipe
+    AsyncPipe,
+    MatSortModule
   ],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss'
@@ -42,6 +43,10 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  /**
+   * Angular lifecycle hook that is called after the component's view has been initialized.
+   * Initializes the displayed columns and adds an "action" column to the list of all columns.
+   */
   public ngOnInit(): void {
     this.displayedColumns = this.columns;
 
@@ -51,21 +56,44 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
     this.allColums.push("action");
   }
 
+  /**
+   * Angular lifecycle hook that is called just before the component is destroyed.
+   * Unsubscribes from the subscription to prevent memory leaks.
+   */
   public ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
   }
 
-  public onPageChange($event: PageEvent) {
+  /**
+   * Event handler that is triggered when the pagination page is changed.
+   * Emits the new page event to notify parent components or services.
+   *
+   * @param {PageEvent} $event - The pagination event containing the new page index and page size.
+   */
+  public onPageChange($event: PageEvent): void {
     this.pageChange.emit($event);
   }
 
-  public delete(element: T) {
+  /**
+   * Triggers the deletion of a specified entity.
+   * Emits the entity to be deleted so that parent components or services can handle the deletion process.
+   *
+   * @param {T} element - The entity to be deleted.
+   */
+  public delete(element: T): void {
     this.deleteEntity.emit(element);
   }
 
-  public edit(element: T) {
+  /**
+   * Triggers the edit action for a specified entity.
+   * Emits the entity to be edited so that parent components or services can handle the editing process.
+   *
+   * @param {T} element - The entity to be edited.
+   */
+  public edit(element: T): void {
     this.editEntity.emit(element);
   }
+  
 }
