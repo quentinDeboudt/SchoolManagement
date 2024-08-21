@@ -12,4 +12,5 @@ public interface IPersonService
     Task<Person> UpdatePersonAsync(Person person);
     void Delete(int id);
     Task<int> CountAsync();
+    PagedResult<Person> SearchPersons(string term, int pageIndex, int pageSize);
 }

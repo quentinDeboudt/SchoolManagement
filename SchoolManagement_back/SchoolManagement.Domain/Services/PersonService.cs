@@ -83,4 +83,23 @@ public class PersonService : IPersonService
         _context.Persons.Remove(person);
         _context.SaveChanges();
     }
+
+    public PagedResult<Person> SearchPersons(string term, int pageIndex, int pageSize)
+    {
+        var query = _context.Persons
+            .Where(p => p.FirstName.Contains(term) || p.LastName.Contains(term));
+
+        var totalCount = query.Count();
+
+        var items = query
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return new PagedResult<Person>
+        {
+            Items = items,
+            TotalCount = totalCount
+        };
+    }
 }

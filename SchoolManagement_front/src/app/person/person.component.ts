@@ -29,6 +29,8 @@ import { PageEvent } from '@angular/material/paginator';
 export class PersonComponent implements OnInit {
   public persons$!: Observable<Person[]>;
   public totalItems$!: Observable<number>;
+  public isSearching = false;
+  public textInput!: string;
   
   public pageEvent = new PageEvent();
   readonly dialog = inject(MatDialog);
@@ -41,6 +43,7 @@ export class PersonComponent implements OnInit {
   ]
 
   
+  
   constructor(private personService: PersonService) {
     this.pageEvent.pageIndex = 0;
     this.pageEvent.pageSize = 5;
@@ -48,54 +51,94 @@ export class PersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getPersons(this.pageEvent);
+  }
+
+  public pageChange($event: PageEvent) {
+
+    if(this.isSearching){
+      this.onSearch('', $event)
+    }else{
+      this.getPersons($event)
+    }
+}
+
+  public getPersons(pageEvent: PageEvent): void {
+    this.persons$ = this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize);
     this.totalItems$ = this.personService.count();
   }
 
-  public openDialog(person?: Person): any {
-    const dialogRef = this.dialog.open(GenericModalComponent, {
+  public addPerson(): void {
+    const dialogRef = this.dialog.open(GenericModalComponent<Person>, {
+      data: {
+        entityName: 'Person',
+        fields: this.fieldsModal,
+      }
+    });
+    dialogRef.afterClosed().subscribe((person: Person) => {
+      if (person) {
+        this.personService.createPerson(person).subscribe();
+        this.getPersons(this.pageEvent);
+      }
+    });
+  }
+
+  public deletePerson(person: Person) {
+    console.log("Id: ", person.id);
+
+    this.personService.deletePerson(person.id).subscribe(response => {
+      this.getPersons(this.pageEvent)
+    })
+  }
+
+  public editPerson(person: Person) {
+    const dialogRef = this.dialog.open(GenericModalComponent<Person>, {
       data: {
         entityName: 'Person',
         fields: this.fieldsModal,
         value: person
       }
     });
-
-    return dialogRef.afterClosed();
-  }
-
-  public getPersons(pageEvent: PageEvent): void {
-    this.persons$ = this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize);
-  }
-
-  public addPerson(): void {
-
-    this.openDialog().subscribe((person: Person) => {
-      if (person) {
-        this.personService.createPerson(person).subscribe({
-          error: (e) => console.error(e),
-          complete: () => this.getPersons(this.pageEvent)
+    
+    dialogRef.afterClosed().subscribe((newPerson: Person) => {
+      if (newPerson) {
+        const updatedPerson = { ...person, ...newPerson };
+        
+        this.personService.editPerson(updatedPerson).subscribe({
+            error: (e) => console.error(e),
+            complete: () => this.getPersons(this.pageEvent)
         });
-      }
+      }  
     });
   }
 
-  public deletePerson(person: Person) {
-   this.personService.deletePerson(person);
+  public onSearch(textInput?: string, pageEvent?: PageEvent): void {
+
+    if(textInput != '' && textInput){
+      this.isSearching = true;
+      this.textInput = textInput;
+    }
+    
+    if(textInput && pageEvent){
+
+      this.personService.searchPersons(
+        this.textInput,
+        pageEvent.pageIndex,
+        pageEvent.pageSize
+      ).subscribe(response => {
+          this.persons$ = response.Items;
+          this.totalItems$ = response.totalCount;
+      })
+    }
+    if(textInput && !pageEvent){
+
+      this.personService.searchPersons(
+        this.textInput,
+        this.pageEvent.pageIndex,
+        this.pageEvent.pageSize
+      ).subscribe(response => {
+          this.persons$ = response.Items
+          this.totalItems$ = response.totalCount;
+      })
+    }
   }
-
-  public editPerson(person: Person) {
-    console.log("after-update: ", person)
-
-    this.openDialog(person).subscribe((person: Person) => {
-      if (person) {
-        console.log("update: ", person)
-        this.personService.editPerson(person).subscribe({
-          error: (e) => console.error(e),
-          complete: () => this.getPersons(this.pageEvent)
-        });
-      }
-    });
-  }
-
-  
 }

@@ -2,18 +2,19 @@
     <app-generic-header
         [headerData]="headerData"
         [icon]="icon"
-        (openedModal)="addPerson()">
+        (openedModal)="addPerson()"
+        (search)="onSearch($event)">
     </app-generic-header>
 </div>
 
 <div class="table">
     <app-generic-table
-        [columns]="['firstName', 'lastName']"
+        [columns]="['id','firstName', 'lastName']"
         [data$]="persons$"
         [totalItems$]="totalItems$"
         (deleteEntity)="deletePerson($event)"
         (editEntity)="editPerson($event)"
-        (pageChange)="getPersons($event)"
+        (pageChange)="pageChange($event)"
         >
     </app-generic-table>
 </div>

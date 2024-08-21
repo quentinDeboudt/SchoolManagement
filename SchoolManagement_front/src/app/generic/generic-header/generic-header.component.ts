@@ -1,10 +1,10 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { GenericModalComponent } from '../generic-modal/generic-modal.component';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-generic-header',
@@ -14,7 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatLabel,
     MatButtonModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    FormsModule
   ],
   templateUrl: './generic-header.component.html',
   styleUrl: './generic-header.component.scss'
@@ -24,8 +25,22 @@ export class GenericHeaderComponent {
   @Input() headerData!: string;
   @Input() icon!: string;
   @Output() openedModal = new EventEmitter();
+  @Output() search = new EventEmitter<string>();
+  public searchTerm: string = '';
 
+  /**
+   * Emits an event when the add button is clicked.
+   */
   addEntity() {
     this.openedModal.emit();
+  }
+
+  /**
+   * Emits the search term whenever the user types in the search input.
+   */
+  public onSearch(): void {
+    if(this.searchTerm){
+      this.search.emit(this.searchTerm);
+    }
   }
 }

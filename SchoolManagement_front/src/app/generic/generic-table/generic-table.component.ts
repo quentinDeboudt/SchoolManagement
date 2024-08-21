@@ -48,6 +48,7 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
    * Initializes the displayed columns and adds an "action" column to the list of all columns.
    */
   public ngOnInit(): void {
+
     this.displayedColumns = this.columns;
 
     this.displayedColumns.forEach(element => {
@@ -82,7 +83,7 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
    *
    * @param {T} element - The entity to be deleted.
    */
-  public delete(element: T): void {
+  public entityDelete(element: T): void {
     this.deleteEntity.emit(element);
   }
 

@@ -71,10 +71,17 @@ public class PersonController : ControllerBase
         return Ok(updatedPerson);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("delete/{id}")]
     public ActionResult Delete(int id)
     {
         _personService.Delete(id);
         return NoContent();
+    }
+
+    [HttpGet("search")]
+    public IActionResult SearchPersons(string term, int pageIndex, int pageSize)
+    {
+        var result = _personService.SearchPersons(term, pageIndex, pageSize);
+        return Ok(result);
     }
 }
