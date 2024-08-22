@@ -26,40 +26,14 @@ import { GenericHeaderComponent } from "../generic/generic-header/generic-header
   styleUrl: './classroom.component.scss'
 })
 export class ClassroomComponent {
-  public classroom$!: Observable<Classroom[]>;
-  readonly dialog = inject(MatDialog);
-  public headerData = "Nom de la Classe";
-  public icon = "location_city";
 
-  constructor(private classroomService: ClassroomService) {
-  }
+  public readonly headerData = "Nom de la Classe";
+  public readonly icon = "location_city";
+  public readonly fieldsModal = [
+    { label: 'Nom de la Classe', formControlName: 'name', type: 'text' }
+  ];
 
-  public ngOnInit(): void {
-    this.getClassroom();
-  }
+  public columns = ['firstName', 'lastName'];
+  public personService = inject(ClassroomService);
 
-  public getClassroom(): void {
-    this.classroom$ = this.classroomService.getClassroom();
-  }
-  
-  public addEntity(): void {
-    const dialogRef = this.dialog.open(GenericModalComponent, {
-      data: {
-        entityName: 'Classroom',
-        fields: [
-          { label: 'Nom de la Classe', formControlName: 'name', type: 'text' }
-        ]
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(classroom => {
-      if (classroom) {
-        this.classroomService.createClassroom(classroom).subscribe(
-          ()=>{
-            this.getClassroom();
-          }
-        )
-      }
-    });
-  }
 }

@@ -56,13 +56,11 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
     });
     this.allColums.push("action");
 
-
-    // Abonnez-vous à data$ pour mettre à jour dataSource
     this.subscription = this.data$.subscribe(data => {
-      console.log('Données reçues dans GenericTableComponent:', data);
       this.dataSource.data = data;
     });
 
+    this.dataSource.paginator = this.paginator;
   }
 
   /**

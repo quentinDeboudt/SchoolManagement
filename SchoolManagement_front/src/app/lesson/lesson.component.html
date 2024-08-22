@@ -1,14 +1,7 @@
-<div>
-    <app-generic-header
-        [headerData]="headerData"
-        [icon]="icon"
-        (openedModal)="addEntity()">
-    </app-generic-header>
-</div>
 
-<div class="table">
-    <app-generic-table
-        [columns]="['id', 'subject', 'teachers', 'groups']"
-        [data$]="lesson$">
-    </app-generic-table>
-</div>
+<app-generic-page
+    [columns]="['id', 'subject', 'teachers', 'groups']"
+    [headerData]="headerData"
+    [icon]="icon"
+    [entityService]="personService">
+</app-generic-page>

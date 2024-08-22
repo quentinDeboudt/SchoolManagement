@@ -1,0 +1,20 @@
+<div>
+    <app-generic-header
+        [headerData]="headerData"
+        [icon]="icon"
+        (openedModal)="addEntity()"
+        (search)="onSearch($event)">
+    </app-generic-header>
+</div>
+
+<div class="table">
+    <app-generic-table
+        [columns]="columns"
+        [data$]="entities$"
+        [totalItems$]="totalItems$"
+        (deleteEntity)="deleteEntity($event)"
+        (editEntity)="editEntity($event)"
+        (pageChange)="pageChange($event)"
+        >
+    </app-generic-table>
+</div>

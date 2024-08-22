@@ -1,20 +1,7 @@
-<div>
-    <app-generic-header
-        [headerData]="headerData"
-        [icon]="icon"
-        (openedModal)="addPerson()"
-        (search)="onSearch($event)">
-    </app-generic-header>
-</div>
 
-<div class="table">
-    <app-generic-table
-        [columns]="['firstName', 'lastName']"
-        [data$]="persons$"
-        [totalItems$]="totalItems$"
-        (deleteEntity)="deletePerson($event)"
-        (editEntity)="editPerson($event)"
-        (pageChange)="pageChange($event)"
-        >
-    </app-generic-table>
-</div>
+<app-generic-page
+    [columns]="['firstName', 'lastName']"
+    [headerData]="headerData"
+    [icon]="icon"
+    [entityService]="personService">
+</app-generic-page>
