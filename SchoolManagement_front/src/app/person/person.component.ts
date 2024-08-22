@@ -6,11 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { GenericTableComponent } from '../generic/generic-table/generic-table.component';
 import { Person } from '../../models/person.model';
 import { PersonService } from '../../service/person.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericHeaderComponent } from "../generic/generic-header/generic-header.component";
 import { GenericModalComponent } from '../generic/generic-modal/generic-modal.component';
 import { PageEvent } from '@angular/material/paginator';
+import { AsyncPipe, NgFor, NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-person',
@@ -21,14 +22,15 @@ import { PageEvent } from '@angular/material/paginator';
     MatIconModule,
     MatButtonModule,
     GenericTableComponent,
-    GenericHeaderComponent
+    GenericHeaderComponent,
+    NgForOf, NgFor, AsyncPipe
 ],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss'
 })
 export class PersonComponent implements OnInit {
-  public persons$!: Observable<Person[]>;
-  public totalItems$!: Observable<number>;
+  public persons$ = new BehaviorSubject<Person[]>([]);
+  public totalItems$ = new BehaviorSubject<number>(0);
   public isSearching = false;
   public textInput!: string;
   
@@ -41,8 +43,6 @@ export class PersonComponent implements OnInit {
     { label: 'Prénom', formControlName: 'firstName', type: 'text' },
     { label: 'Nom', formControlName: 'lastName', type: 'text' },
   ]
-
-  
   
   constructor(private personService: PersonService) {
     this.pageEvent.pageIndex = 0;
@@ -54,17 +54,23 @@ export class PersonComponent implements OnInit {
   }
 
   public pageChange($event: PageEvent) {
-
     if(this.isSearching){
       this.onSearch('', $event)
     }else{
       this.getPersons($event)
     }
-}
+  }
 
   public getPersons(pageEvent: PageEvent): void {
-    this.persons$ = this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize);
-    this.totalItems$ = this.personService.count();
+    this.personService.getPersons(pageEvent.pageIndex, pageEvent.pageSize).subscribe(persons =>{
+      this.persons$.next(persons);
+      console.log('getPersons', persons); 
+
+    });
+
+    this.personService.count().subscribe(number =>{
+      this.totalItems$.next(number);
+    });;
   }
 
   public addPerson(): void {
@@ -76,16 +82,17 @@ export class PersonComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((person: Person) => {
       if (person) {
-        this.personService.createPerson(person).subscribe();
-        this.getPersons(this.pageEvent);
+        this.personService.createPerson(person).subscribe(response => {
+          console.log(response);
+          this.getPersons(this.pageEvent);
+        });
       }
     });
   }
 
   public deletePerson(person: Person) {
-    console.log("Id: ", person.id);
-
     this.personService.deletePerson(person.id).subscribe(response => {
+      console.log(response);
       this.getPersons(this.pageEvent)
     })
   }
@@ -113,32 +120,27 @@ export class PersonComponent implements OnInit {
 
   public onSearch(textInput?: string, pageEvent?: PageEvent): void {
 
+    if(textInput == '' || !textInput){
+      this.isSearching = false;
+      this.textInput = '';
+      this.getPersons(this.pageEvent);
+    }
+
     if(textInput != '' && textInput){
       this.isSearching = true;
       this.textInput = textInput;
     }
-    
-    if(textInput && pageEvent){
 
-      this.personService.searchPersons(
-        this.textInput,
-        pageEvent.pageIndex,
-        pageEvent.pageSize
-      ).subscribe(response => {
-          this.persons$ = response.Items;
-          this.totalItems$ = response.totalCount;
-      })
-    }
-    if(textInput && !pageEvent){
+    if(this.isSearching){
+      const pageIndex = pageEvent ? pageEvent.pageIndex : this.pageEvent.pageIndex;
+      const pageSize = pageEvent ? pageEvent.pageSize : this.pageEvent.pageSize;
 
-      this.personService.searchPersons(
-        this.textInput,
-        this.pageEvent.pageIndex,
-        this.pageEvent.pageSize
-      ).subscribe(response => {
-          this.persons$ = response.Items
-          this.totalItems$ = response.totalCount;
-      })
-    }
+      this.personService.searchPersons(this.textInput, pageIndex, pageSize).subscribe(response => {
+        this.persons$.next(response.items);
+        console.log('Is searching', response.items, response.totalCount); 
+        this.totalItems$.next(response.totalCount);
+
+      });
+    }   
   }
 }

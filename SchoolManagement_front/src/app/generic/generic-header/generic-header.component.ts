@@ -41,6 +41,8 @@ export class GenericHeaderComponent {
   public onSearch(): void {
     if(this.searchTerm){
       this.search.emit(this.searchTerm);
+    }else{
+      this.search.emit();
     }
   }
 }

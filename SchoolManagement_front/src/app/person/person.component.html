@@ -9,7 +9,7 @@
 
 <div class="table">
     <app-generic-table
-        [columns]="['id','firstName', 'lastName']"
+        [columns]="['firstName', 'lastName']"
         [data$]="persons$"
         [totalItems$]="totalItems$"
         (deleteEntity)="deletePerson($event)"
