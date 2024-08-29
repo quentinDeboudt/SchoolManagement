@@ -3,6 +3,8 @@ using Microsoft.OpenApi.Models;
 using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Services;
 using SchoolManagement.Infrastructure;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,7 @@ builder.Services.AddCors(options =>
 });
 
 // Ajouter les services au conteneur.
-builder.Services.AddControllers(); // Ajoute les services de contrôleurs
+builder.Services.AddControllers();
 
 // services
 builder.Services.AddScoped<IPersonService, PersonService>();
