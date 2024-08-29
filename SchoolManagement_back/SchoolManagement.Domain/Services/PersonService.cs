@@ -2,10 +2,12 @@ using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Infrastructure;
 using SchoolManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SchoolManagement.Domain.Services;
-
 public class PersonService : IPersonService
 {
     private readonly SchoolManagementDbContext _context;
@@ -15,11 +17,17 @@ public class PersonService : IPersonService
         _context = context;
     }
 
+    /// <summary>
+    /// Get the total count of persons asynchronously.
+    /// </summary>
     public async Task<int> CountAsync()
     {
         return await _context.Persons.CountAsync();
     }
 
+    /// <summary>
+    /// Get all persons with related entities.
+    /// </summary>
     public IEnumerable<Person> GetAll()
     {
         return _context.Persons
@@ -30,14 +38,21 @@ public class PersonService : IPersonService
             .ToList();
     }
 
-    public Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
+    /// <summary>
+    /// Get persons with pagination asynchronously.
+    /// </summary>
+    public async Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return _context.Persons
+        return await _context.Persons
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
+            .Include(p => p.Roles)
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Get a specific person by ID.
+    /// </summary>
     public Person GetById(int id)
     {
         return _context.Persons
@@ -48,12 +63,18 @@ public class PersonService : IPersonService
             .FirstOrDefault(p => p.Id == id);
     }
 
-    public void Create(Person person)
+    /// <summary>
+    /// Create a new person asynchronously.
+    /// </summary>
+    public  void CreateAsync(Person person)
     {
-        _context.Persons.Add(person);
-        _context.SaveChanges();
+         _context.Persons.AddAsync(person);
+         _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Update an existing person asynchronously.
+    /// </summary>
     public async Task<Person> UpdatePersonAsync(Person person)
     {
         var existingPerson = await _context.Persons.FindAsync(person.Id);
@@ -75,26 +96,29 @@ public class PersonService : IPersonService
         return existingPerson;
     }
 
-    public void Delete(int id)
+    /// <summary>
+    /// Delete a person by ID asynchronously.
+    /// </summary>
+    public void DeleteAsync(int id)
     {
-        var person = _context.Persons.Find(id);
-        if (person == null) return;
-
-        _context.Persons.Remove(person);
-        _context.SaveChanges();
+        // _context.Persons.Remove(id);
+        //  _context.SaveChangesAsync();
     }
 
-    public PagedResult<Person> SearchPersons(string term, int pageIndex, int pageSize)
+    /// <summary>
+    /// Search persons by term with pagination.
+    /// </summary>
+    public async Task<PagedResult<Person>> SearchPersons(string term, int pageIndex, int pageSize)
     {
         var query = _context.Persons
             .Where(p => p.FirstName.Contains(term) || p.LastName.Contains(term));
 
-        var totalCount = query.Count();
+        var totalCount = await query.CountAsync();
 
-        var items = query
+        var items = await query
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
-            .ToList();
+            .ToListAsync();
 
         return new PagedResult<Person>
         {

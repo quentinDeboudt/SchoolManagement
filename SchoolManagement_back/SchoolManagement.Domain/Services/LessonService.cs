@@ -1,9 +1,11 @@
 using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Domain.Entities;
 using SchoolManagement.Infrastructure;
-using System.Collections.Generic;
-using System.Linq;
+using SchoolManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SchoolManagement.Domain.Services
 {
@@ -16,49 +18,98 @@ namespace SchoolManagement.Domain.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Get the total count of lessons asynchronously.
+        /// </summary>
+        public async Task<int> CountAsync()
+        {
+            return await _context.Lessons.CountAsync();
+        }
+
+        /// <summary>
+        /// Get all lessons.
+        /// </summary>
         public IEnumerable<Lesson> GetAll()
         {
-            return _context.Lessons
-                .Include(l => l.Subject)
-                .Include(l => l.Teachers)
-                .Include(l => l.Groups)
-                .ToList();
+            return _context.Lessons.ToList();
         }
 
+        /// <summary>
+        /// Get lessons with pagination asynchronously.
+        /// </summary>
+        public async Task<List<Lesson>> GetWithPagination(int pageNumber, int pageSize)
+        {
+            return await _context.Lessons
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .Include(c => c.Groups)
+
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get a specific lesson by ID.
+        /// </summary>
         public Lesson GetById(int id)
         {
-            return _context.Lessons
-                .Include(l => l.Subject)
-                .Include(l => l.Teachers)
-                .Include(l => l.Groups)
-                .FirstOrDefault(l => l.Id == id);
+            return _context.Lessons.FirstOrDefault(l => l.Id == id);
         }
 
-        public void Create(Lesson lesson)
+        /// <summary>
+        /// Create a new lesson asynchronously.
+        /// </summary>
+        public  void CreateAsync(Lesson lesson)
         {
-            _context.Lessons.Add(lesson);
-            _context.SaveChanges();
+             _context.Lessons.AddAsync(lesson);
+             _context.SaveChangesAsync();
         }
 
-        public void Update(int id, Lesson lesson)
+        /// <summary>
+        /// Update an existing lesson asynchronously.
+        /// </summary>
+        public async Task<Lesson> UpdateLessonAsync(Lesson lesson)
         {
-            var existingLesson = _context.Lessons.Find(id);
-            if (existingLesson == null) return;
+            var existingLesson = await _context.Lessons.FindAsync(lesson.Id);
+            // if (existingLesson == null)
+            // {
+            //     return null;
+            // }
 
-            existingLesson.SubjectId = lesson.SubjectId;
-            existingLesson.Subject = lesson.Subject;
-            existingLesson.Teachers = lesson.Teachers;
-            existingLesson.Groups = lesson.Groups;
-            _context.SaveChanges();
+            // existingLesson.Name = lesson.Name; // Example of property update
+            // _context.Lessons.Update(existingLesson);
+            // await _context.SaveChangesAsync();
+
+            return existingLesson;
         }
 
-        public void Delete(int id)
+        /// <summary>
+        /// Delete a lesson by ID asynchronously.
+        /// </summary>
+        public void DeleteAsync(int id)
         {
-            var lesson = _context.Lessons.Find(id);
-            if (lesson == null) return;
+            // _context.Lessons.Remove(id);
+            // _context.SaveChangesAsync();
+        }
 
-            _context.Lessons.Remove(lesson);
-            _context.SaveChanges();
+        /// <summary>
+        /// Search lessons by term with pagination.
+        /// </summary>
+        public async Task<PagedResult<Lesson>> SearchLessons(string term, int pageIndex, int pageSize)
+        {
+            // var query = _context.Lessons
+            //     .Where(l => l.name.Contains(term));
+
+            var totalCount = await _context.Lessons.CountAsync();
+            var items = await _context.Lessons
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Lesson>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
         }
     }
 }

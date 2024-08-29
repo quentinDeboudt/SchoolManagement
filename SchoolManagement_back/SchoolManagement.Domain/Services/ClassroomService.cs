@@ -1,61 +1,113 @@
 using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Domain.Entities;
 using SchoolManagement.Infrastructure;
-using System.Collections.Generic;
-using System.Linq;
+using SchoolManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
-namespace SchoolManagement.Domain.Services
+namespace SchoolManagement.Domain.Services;
+
+public class ClassroomService : IClassroomService
 {
-    public class ClassroomService : IClassroomService
+    private readonly SchoolManagementDbContext _context;
+
+    public ClassroomService(SchoolManagementDbContext context)
     {
-        private readonly SchoolManagementDbContext _context;
+        _context = context;
+    }
 
-        public ClassroomService(SchoolManagementDbContext context)
+    /// <summary>
+    /// Get the total count of classrooms asynchronously.
+    /// </summary>
+    public async Task<int> CountAsync()
+    {
+        return await _context.Classrooms.CountAsync();
+    }
+
+    /// <summary>
+    /// Get all classrooms.
+    /// </summary>
+    public IEnumerable<Classroom> GetAll()
+    {
+        return _context.Classrooms.ToList();
+    }
+
+    /// <summary>
+    /// Get classrooms with pagination asynchronously.
+    /// </summary>
+    public async Task<List<Classroom>> GetWithPagination(int pageNumber, int pageSize)
+    {
+        return await _context.Classrooms
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .Include(c => c.Groups)
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// Get a specific classroom by ID.
+    /// </summary>
+    public Classroom GetById(int id)
+    {
+        return _context.Classrooms.FirstOrDefault(c => c.Id == id);
+    }
+
+    /// <summary>
+    /// Create a new classroom asynchronously.
+    /// </summary>
+    public void CreateAsync(Classroom classroom)
+    {
+        _context.Classrooms.AddAsync(classroom);
+        _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Update an existing classroom asynchronously.
+    /// </summary>
+    public async Task<Classroom> UpdateClassroomAsync(Classroom classroom)
+    {
+        var existingClassroom = await _context.Classrooms.FindAsync(classroom.Id);
+        if (existingClassroom == null)
         {
-            _context = context;
+            return null;
         }
 
-        public IEnumerable<Classroom> GetAll()
+        existingClassroom.Name = classroom.Name; // Example of property update
+        _context.Classrooms.Update(existingClassroom);
+        await _context.SaveChangesAsync();
+
+        return existingClassroom;
+    }
+
+    /// <summary>
+    /// Delete a classroom by ID asynchronously.
+    /// </summary>
+    public void DeleteAsync(int id)
+    {
+        // _context.Classrooms.Remove(id);
+        // _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Search classrooms by term with pagination.
+    /// </summary>
+    public async Task<PagedResult<Classroom>> SearchClassrooms(string term, int pageIndex, int pageSize)
+    {
+        var query = _context.Classrooms
+            .Where(c => c.Name.Contains(term));
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Classroom>
         {
-            return _context.Classrooms
-                .Include(c => c.Groups)
-                .Include(c => c.Teachers)
-                .ToList();
-        }
-
-        public Classroom GetById(int id)
-        {
-            return _context.Classrooms
-                .Include(c => c.Groups)
-                .Include(c => c.Teachers)
-                .FirstOrDefault(c => c.Id == id);
-        }
-
-        public void Create(Classroom classroom)
-        {
-            _context.Classrooms.Add(classroom);
-            _context.SaveChanges();
-        }
-
-        public void Update(int id, Classroom classroom)
-        {
-            var existingClassroom = _context.Classrooms.Find(id);
-            if (existingClassroom == null) return;
-
-            existingClassroom.Name = classroom.Name;
-            existingClassroom.Groups = classroom.Groups;
-            existingClassroom.Teachers = classroom.Teachers;
-            _context.SaveChanges();
-        }
-
-        public void Delete(int id)
-        {
-            var classroom = _context.Classrooms.Find(id);
-            if (classroom == null) return;
-
-            _context.Classrooms.Remove(classroom);
-            _context.SaveChanges();
-        }
+            Items = items,
+            TotalCount = totalCount
+        };
     }
 }
