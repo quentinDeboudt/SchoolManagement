@@ -8,6 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ObjectToTextPipe } from '../../pipe/object-to-text-pipe.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { ExtractNamePipe } from '../../pipe/extract-name.pipe';
 
 @Component({
   selector: 'app-generic-table',
@@ -22,7 +23,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatButtonModule,
     AsyncPipe,
-    MatSortModule
+    MatSortModule,
+    ExtractNamePipe
   ],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss'
@@ -42,6 +44,7 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  
 
   /**
    * Angular lifecycle hook that is called after the component's view has been initialized.
@@ -102,5 +105,4 @@ export class GenericTableComponent<T> implements OnInit, OnDestroy {
   public edit(element: T): void {
     this.editEntity.emit(element);
   }
-  
 }

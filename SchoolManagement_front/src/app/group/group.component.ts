@@ -18,6 +18,7 @@ export class GroupComponent{
   public classroom!: Classroom[];
 
   public readonly headerData = "Nom du Groupe";
+  public readonly entityName = "Groupe";
   public readonly icon = "group_add";
   public readonly columns = ['name','classroom'];
   public readonly fieldsModal = [
@@ -42,8 +43,6 @@ export class GroupComponent{
           id: classroom.id,
           name: classroom.name
         }))
-
-        console.log(simplifiedClassroom)
         this.classroom = simplifiedClassroom
       },
     )

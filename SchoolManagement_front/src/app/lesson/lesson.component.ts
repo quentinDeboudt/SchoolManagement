@@ -15,6 +15,7 @@ import { Lesson } from '../../models/lesson.model';
 })
 export class LessonComponent {
   public readonly headerData = "Nom du Cours";
+  public readonly entityName = "Cour";
   public readonly icon = "bag";
   public readonly fieldsModal = [
     { label: 'Numero de la Matière', formControlName: 'subjectId', type: 'text' }

@@ -32,9 +32,6 @@ public class PersonService : IPersonService
     {
         return _context.Persons
             .Include(p => p.Roles)
-            .Include(p => p.StudentGroups)
-            .Include(p => p.TeacherClassrooms)
-            .Include(p => p.TeacherLessons)
             .ToList();
     }
 

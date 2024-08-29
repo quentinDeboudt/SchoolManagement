@@ -26,6 +26,8 @@ export class GenericHeaderComponent {
   @Input() icon!: string;
   @Output() openedModal = new EventEmitter();
   @Output() search = new EventEmitter<string>();
+  @Input() entityName!: string;
+
   public searchTerm: string = '';
 
   /**

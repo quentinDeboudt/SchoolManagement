@@ -18,6 +18,7 @@ export class PersonComponent implements OnInit{
   public roles!: Role[];
 
   public readonly headerData = "Nom, Prénom...";
+  public readonly entityName = "personne";
   public readonly icon = "person_add";
   public readonly columns = ['firstName', 'lastName', 'roles'];
   public readonly fieldsModal = [

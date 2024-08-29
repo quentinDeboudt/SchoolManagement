@@ -15,6 +15,7 @@ import { Role } from '../../models/role.model';
 })
 export class RoleComponent{
   public readonly headerData = "Nom du Rôle";
+  public readonly entityName = "Rôle";
   public readonly icon = "local_offer";
   public readonly fieldsModal = [
     { label: 'Nom du Rôle', formControlName: 'name', type: 'text' }

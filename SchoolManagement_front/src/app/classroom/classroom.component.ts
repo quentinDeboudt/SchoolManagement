@@ -15,6 +15,7 @@ import { GenericPageComponent } from '../generic/generic-page/generic-page.compo
 export class ClassroomComponent {
 
   public readonly headerData = "Nom de la Classe";
+  public readonly entityName = "Class";
   public readonly icon = "location_city";
   public readonly fieldsModal = [
     { label: 'Nom de la Classe', formControlName: 'name', type: 'text' }

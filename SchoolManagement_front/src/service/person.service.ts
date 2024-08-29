@@ -21,6 +21,10 @@ export class PersonService implements IEntityService<Person>{
     return this.http.get<number>(this.apiUrl+`/count`);
   }
 
+  public getAllEntities(): Observable<Person[]>{
+    return this.http.get<Person[]>(this.apiUrl);
+  }
+
   public getEntities(pageNumber: number, pageSize: number): Observable<Person[]>{
     return this.http.get<Person[]>(`${this.apiUrl}/pagination?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }

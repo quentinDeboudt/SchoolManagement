@@ -34,6 +34,8 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
   public pageEvent = new PageEvent();
   private readonly destroy$ = new Subject<void>();
   readonly dialog = inject(MatDialog);
+  public pageCurrently = new PageEvent();
+
 
   @Input() data$!: Observable<T[]>;
   @Input() icon!: string;
@@ -42,7 +44,7 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
   @Input() fieldsModal!: { label: string; formControlName: string; type: string; }[];
   @Input() entityService!: IEntityService<T>;
   @Input() otherEntity!: any[];
-  public entityName!: T;
+  @Input() entityName!: string;
 
   constructor( ) {
     this.pageEvent.pageIndex = 0;
@@ -62,8 +64,14 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
     this.isSearching ? this.onSearch(this.textInput, event) : this.getEntities(event);
   }
 
-  public getEntities(pageEvent: PageEvent): void {
-    this.entityService.getEntities(pageEvent.pageIndex, pageEvent.pageSize)
+  public getEntities(pageEvent?: PageEvent): void {
+    if(pageEvent){
+      this.pageCurrently = pageEvent
+    }
+
+    console.log("pageCurrently = ",this.pageCurrently);
+    
+    this.entityService.getEntities(this.pageCurrently.pageIndex, this.pageCurrently.pageSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: entities => this.entities$.next(entities),
@@ -97,7 +105,7 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
         const newEntity = { ...entity, ...updatedEntity };
         this.entityService.editEntity(newEntity)
           .pipe(takeUntil(this.destroy$))
-          .subscribe(() => this.getEntities(this.pageEvent));
+          .subscribe(() => this.getEntities());
       }
     });
   }
