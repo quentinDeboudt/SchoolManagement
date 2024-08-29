@@ -1,6 +1,8 @@
 import { RoleService } from '../../service/role.service';
 import { Component, inject} from '@angular/core';
 import { GenericPageComponent } from '../generic/generic-page/generic-page.component';
+import { IEntityService } from '../../interface-service/IEntity.service';
+import { Role } from '../../models/role.model';
 
 @Component({
   selector: 'app-role',
@@ -18,7 +20,7 @@ export class RoleComponent{
     { label: 'Nom du Rôle', formControlName: 'name', type: 'text' }
   ];
 
-  public columns = ['firstName', 'lastName'];
-  public personService = inject(RoleService);
+  public columns = ['id', 'name'];
+  public roleService = inject(RoleService);
 
 }
