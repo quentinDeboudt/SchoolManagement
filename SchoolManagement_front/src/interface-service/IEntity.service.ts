@@ -1,5 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
+import { GroupService } from '../service/group.service';
 
 export interface IEntityService<T> {
   getEntities(pageIndex: number, pageSize: number): Observable<T[]>;
@@ -11,4 +12,4 @@ export interface IEntityService<T> {
 }
 
 // Create a injection token:
-export const ENTITY_SERVICE_TOKEN = new InjectionToken<IEntityService<any>>('EntityService');
+export const ENTITY_SERVICE_TOKEN = new InjectionToken<IEntityService<unknown>>('EntityService');
