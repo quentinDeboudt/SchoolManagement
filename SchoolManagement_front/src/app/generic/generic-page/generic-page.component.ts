@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, Inject, output, Output, EventEmitter, Input } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, Input } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericModalComponent } from '../generic-modal/generic-modal.component';
 import { PageEvent } from '@angular/material/paginator';
 import { takeUntil } from 'rxjs/operators';
-import { ENTITY_SERVICE_TOKEN, IEntityService } from '../../../interface-service/IEntity.service';
+import { IEntityService } from '../../../interface-service/IEntity.service';
 import { GenericHeaderComponent } from "../generic-header/generic-header.component";
 
 @Component({
@@ -39,18 +39,14 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
   @Input() icon!: string;
   @Input() headerData!: string;
   @Input() columns!: string[];
-  @Input() fieldsModal!: any;
+  @Input() fieldsModal!: { label: string; formControlName: string; type: string; }[];
   @Input() entityService!: IEntityService<T>;
+  @Input() otherEntity!: any[];
+  public entityName!: T;
 
   constructor( ) {
     this.pageEvent.pageIndex = 0;
     this.pageEvent.pageSize = 5;
-  }
-
-  public getEntities(pageEvent: PageEvent): void {
-    this.entityService.getEntities(pageEvent.pageIndex, pageEvent.pageSize).subscribe((entities) => {
-      this.entities$.next(entities);
-    });
   }
 
   public ngOnInit(): void {
@@ -66,18 +62,18 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
     this.isSearching ? this.onSearch(this.textInput, event) : this.getEntities(event);
   }
 
-  // private getEntities(pageEvent: PageEvent): void {
-  //   this.entityService.getEntities(pageEvent.pageIndex, pageEvent.pageSize)
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe({
-  //       next: entities => this.entities$.next(entities),
-  //       error: err => console.error('Failed to fetch entities', err)
-  //     });
+  public getEntities(pageEvent: PageEvent): void {
+    this.entityService.getEntities(pageEvent.pageIndex, pageEvent.pageSize)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: entities => this.entities$.next(entities),
+        error: err => console.error('Failed to fetch entities', err)
+      });
 
-  //   this.entityService.count()
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe(count => this.totalItems$.next(count));
-  // }
+    this.entityService.count()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(count => this.totalItems$.next(count));
+  }
 
   public addEntity(): void {
     this.openDialog().afterClosed().pipe(takeUntil(this.destroy$)).subscribe(entity => {
@@ -130,12 +126,10 @@ export class GenericPageComponent<T> implements OnInit, OnDestroy {
   private openDialog(entity?: T) {
     return this.dialog.open(GenericModalComponent<T>, {
       data: {
-        entityName: 'Entity', // Peut être un nom dynamique
-        fields: [
-          { label: 'Field1', formControlName: 'field1', type: 'text' },
-          { label: 'Field2', formControlName: 'field2', type: 'text' },
-        ],
-        value: entity
+        entityName: this.entityName,
+        fields: this.fieldsModal,
+        value: entity,
+        otherEntity: this.otherEntity
       }
     });
   }

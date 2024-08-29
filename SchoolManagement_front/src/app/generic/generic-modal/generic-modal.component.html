@@ -3,9 +3,21 @@
 <mat-dialog-content>
   <form [formGroup]="entityForm">
     <div *ngFor="let field of data.fields">
-      <mat-form-field class="full-width">
-        <mat-label>{{ field.label }}</mat-label>
-        <input matInput cdkFocusInitial [formControlName]="field.formControlName" [type]="field.type">
+
+      <ng-template #defaultInput>
+        <mat-form-field>
+          <mat-label>{{ field.label }}</mat-label>
+          <input matInput cdkFocusInitial [formControlName]="field.formControlName" [type]="field.type">
+        </mat-form-field>
+      </ng-template>
+  
+      <mat-form-field *ngIf="field.type === 'entity'; else defaultInput">
+        <mat-label>{{field.formControlName}}</mat-label>
+        <mat-select [formControlName]="field.formControlName" [compareWith]="isChecked" multiple>
+          <mat-option *ngFor="let option of data.otherEntity" [value]="option">
+            {{option.name}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
   </form>

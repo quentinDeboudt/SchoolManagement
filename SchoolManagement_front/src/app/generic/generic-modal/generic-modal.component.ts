@@ -5,17 +5,22 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { NgFor } from '@angular/common';
+import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import { MatIcon } from '@angular/material/icon';
+import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
 
 interface DialogData {
   entityName: string;
   fields: Field[];
   value: any;
+  otherEntity: any[];
 }
 
 export interface Field {
@@ -37,7 +42,12 @@ export interface Field {
     MatInput,
     MatButtonModule,
     ReactiveFormsModule,
-    NgFor
+    NgFor,
+    NgIf,
+    MatSelectModule,
+    MatChipsModule,
+    MatIcon,
+    CdkListbox, CdkOption
   ],
   templateUrl: './generic-modal.component.html',
   styleUrl: './generic-modal.component.scss'
@@ -57,6 +67,7 @@ export class GenericModalComponent<T> implements OnInit {
    * This method sets up the form group by iterating over the fields provided in the data.
    * If a value is provided for a field, it is set as the initial,
    * otherwise, the control is initialized with an empty string.
+   * @returns void
    */
   public ngOnInit(): void {
     this.data.fields.forEach(field => {
@@ -70,6 +81,7 @@ export class GenericModalComponent<T> implements OnInit {
 
   /**
    * Closes the dialog without saving any changes.
+   * @returns void
    */
   public onCancel(): void {
     this.dialogRef.close();
@@ -77,19 +89,23 @@ export class GenericModalComponent<T> implements OnInit {
 
   /**
    * Submits the form data.
+   * @returns void
    */
-  // public onSubmit(): void {
-  //   if (this.entityForm.valid) {
-  //     this.dialogRef.close(this.entityForm.value);
-  //   }
-  // }
-
   public onSubmit(): void {
-    console.log('onSubmit called with form values:', this.entityForm.value);
     if (this.entityForm.valid) {
         // Combine the existing data with the updated values from the form
         const updatedPerson = { ...this.data.value, ...this.entityForm.value };
         this.dialogRef.close(updatedPerson);
     }
-}
+  }
+
+  /**
+   * Compare value to checked.
+   * @param option 
+   * @param selected 
+   * @returns boolean
+   */
+  public isChecked(option: any, selected: any): boolean {
+    return option && selected ? option.id === selected.id : option === selected;
+  }
 }
