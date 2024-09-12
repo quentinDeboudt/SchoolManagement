@@ -5,16 +5,28 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { NgFor } from '@angular/common';
+import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import { MatIcon } from '@angular/material/icon';
+import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
 
 interface DialogData {
   entityName: string;
-  fields: Array<{ label: string, formControlName: string, type: string }>;
+  fields: Field[];
+  value: any;
+  otherEntity: any[];
+}
+
+export interface Field {
+  label: string;
+  formControlName: string;
+  type: string;
 }
 
 @Component({
@@ -30,36 +42,70 @@ interface DialogData {
     MatInput,
     MatButtonModule,
     ReactiveFormsModule,
-    NgFor
+    NgFor,
+    NgIf,
+    MatSelectModule,
+    MatChipsModule,
+    MatIcon,
+    CdkListbox, CdkOption
   ],
   templateUrl: './generic-modal.component.html',
   styleUrl: './generic-modal.component.scss'
 })
-export class GenericModalComponent implements OnInit {
-  entityForm: FormGroup;
+export class GenericModalComponent<T> implements OnInit {
+  public entityForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<GenericModalComponent>,
+    private dialogRef: MatDialogRef<GenericModalComponent<T>>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
     this.entityForm = this.fb.group({});
   }
 
-  ngOnInit(): void {
+  /**
+   * This method sets up the form group by iterating over the fields provided in the data.
+   * If a value is provided for a field, it is set as the initial,
+   * otherwise, the control is initialized with an empty string.
+   * @returns void
+   */
+  public ngOnInit(): void {
     this.data.fields.forEach(field => {
-      this.entityForm.addControl(field.formControlName, this.fb.control('', Validators.required));
+      const fieldValue = this.data.value ? this.data.value[field.formControlName] : '';
+      this.entityForm.addControl(
+        field.formControlName,
+        this.fb.control(fieldValue, Validators.required)
+      );
     });
   }
 
-  onCancel(): void {
+  /**
+   * Closes the dialog without saving any changes.
+   * @returns void
+   */
+  public onCancel(): void {
     this.dialogRef.close();
   }
 
-  onSubmit(): void {
+  /**
+   * Submits the form data.
+   * @returns void
+   */
+  public onSubmit(): void {
     if (this.entityForm.valid) {
-      this.dialogRef.close(this.entityForm.value);
+        // Combine the existing data with the updated values from the form
+        const updatedPerson = { ...this.data.value, ...this.entityForm.value };
+        this.dialogRef.close(updatedPerson);
     }
   }
-}
 
+  /**
+   * Compare value to checked.
+   * @param option 
+   * @param selected 
+   * @returns boolean
+   */
+  public isChecked(option: any, selected: any): boolean {
+    return option && selected ? option.id === selected.id : option === selected;
+  }
+}

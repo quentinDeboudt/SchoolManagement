@@ -1,17 +1,10 @@
-<div>
-    <app-generic-header
-        [headerData]="headerData"
-        [icon]="icon"
-        (openedModal)="addEntity()">
-    </app-generic-header>
-</div>
 
-<div class="table">
-    <app-generic-table
-        [columns]="['firstName', 'lastName']"
-        [data$]="persons$"
-        (deleteEntity)="deletePerson($event)"
-        (editEntity)="editPerson($event)"
-        >
-    </app-generic-table>
-</div>
+<app-generic-page
+    [columns]="columns"
+    [headerData]="headerData"
+    [icon]="icon"
+    [entityService]="personService"
+    [fieldsModal]="fieldsModal"
+    [otherEntity]="roles"
+    [entityName]="entityName">
+</app-generic-page>

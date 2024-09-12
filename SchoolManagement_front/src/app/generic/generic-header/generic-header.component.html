@@ -2,16 +2,16 @@
     <div>
         <mat-form-field>
             <mat-label>{{headerData}}</mat-label>
-            <input matInput placeholder="Search">
+            <input matInput type="text" [(ngModel)]="searchTerm" placeholder="Search..."/>
         </mat-form-field>
         
         <button mat-icon-button>
-            <mat-icon>search</mat-icon>
+            <mat-icon (click)="onSearch()">search</mat-icon>
         </button>
     </div>
 
     <button mat-flat-button (click)="addEntity()">
-        <span>Ajouter</span>
+        <span>Ajouter {{entityName}}</span>
         <mat-icon>{{icon}}</mat-icon>
     </button>
 </div>

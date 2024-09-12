@@ -1,80 +1,124 @@
 using Microsoft.AspNetCore.Mvc;
-using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Entities;
-using System.Collections.Generic;
+using SchoolManagement.Application.Interfaces;
+using System.Threading.Tasks;
 
-namespace SchoolManagement.API.Controllers
+namespace SchoolManagement.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class GroupController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class GroupController : ControllerBase
+    private readonly IGroupService _groupService;
+
+    // Constructor for injecting the Group service.
+    public GroupController(IGroupService groupService)
     {
-        private readonly IGroupService _groupService;
+        _groupService = groupService;
+    }
 
-        public GroupController(IGroupService groupService)
+    // Get the total count of groups.
+    // Returns: An ActionResult containing the total count of groups as an integer.
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> GetGroupsCount()
+    {
+        var count = await _groupService.CountAsync();
+        return Ok(count);
+    }
+
+    // Get all groups without pagination.
+    // Returns: An ActionResult containing a list of all groups.
+    [HttpGet]
+    public ActionResult<IEnumerable<Group>> GetAll()
+    {
+        var groups = _groupService.GetAll();
+        return Ok(groups);
+    }
+
+    // Get groups with pagination.
+    // Parameters:
+    //   - pageNumber: The page number to retrieve (int).
+    //   - pageSize: The number of items per page (int).
+    // Returns: A Task containing a list of groups for the specified page.
+    [HttpGet("pagination")]
+    public Task<List<Group>> GetWithPagination(int pageNumber, int pageSize)
+    {
+        var groups = _groupService.GetWithPagination(pageNumber, pageSize);
+        return groups;
+    }
+
+    // Get a specific group by ID.
+    // Parameters:
+    //   - id: The ID of the group to retrieve (int).
+    // Returns: An ActionResult containing the group with the specified ID.
+    //          Returns 404 Not Found if the group is not found.
+    [HttpGet("{id}")]
+    public ActionResult<Group> GetById(int id)
+    {
+        var group = _groupService.GetById(id);
+        if (group == null)
         {
-            _groupService = groupService;
+            return NotFound();
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Group>> GetAll()
+        return Ok(group);
+    }
+
+    // Create a new group.
+    // Parameters:
+    //   - group: The group entity to create (Group).
+    // Returns: An ActionResult indicating the result of the creation.
+    //          Returns 201 Created with the URI of the new group.
+    [HttpPost]
+    public ActionResult Create([FromBody] Group group)
+    {
+        _groupService.CreateAsync(group);
+        return CreatedAtAction(nameof(GetById), new { id = group.Id }, group);
+    }
+
+    // Update an existing group.
+    // Parameters:
+    //   - group: The updated group entity (Group).
+    // Returns: An IActionResult indicating the result of the update.
+    //          Returns 200 OK with the updated group, or 404 Not Found if the group does not exist.
+    [HttpPut]
+    public async Task<IActionResult> UpdateGroup([FromBody] Group group)
+    {
+        if (group == null || group.Id <= 0)
         {
-            var groups = _groupService.GetAll();
-            return Ok(groups);
+            return BadRequest("Invalid group data");
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Group> GetById(int id)
+        var updatedGroup = await _groupService.UpdateGroupAsync(group);
+        if (updatedGroup == null)
         {
-            var group = _groupService.GetById(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-            return Ok(group);
+            return NotFound("Group not found");
         }
 
-        [HttpPost]
-        public ActionResult Create([FromBody] Group group)
-        {
-            if (group == null)
-            {
-                return BadRequest("Group object is null");
-            }
+        return Ok(updatedGroup);
+    }
 
-            _groupService.Create(group);
-            return CreatedAtAction(nameof(GetById), new { id = group.Id }, group);
-        }
+    // Delete a group by ID.
+    // Parameters:
+    //   - id: The ID of the group to delete (int).
+    // Returns: An ActionResult indicating the result of the deletion.
+    //          Returns 204 No Content if successful.
+    [HttpDelete("delete/{id}")]
+    public void Delete(int id)
+    {
+        _groupService.DeleteAsync(id);
+    }
 
-        [HttpPut("{id}")]
-        public ActionResult Update(int id, [FromBody] Group group)
-        {
-            if (group == null)
-            {
-                return BadRequest("Group object is null");
-            }
-
-            var existingGroup = _groupService.GetById(id);
-            if (existingGroup == null)
-            {
-                return NotFound();
-            }
-
-            _groupService.Update(id, group);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
-        {
-            var existingGroup = _groupService.GetById(id);
-            if (existingGroup == null)
-            {
-                return NotFound();
-            }
-
-            _groupService.Delete(id);
-            return NoContent();
-        }
+    // Search groups by term with pagination.
+    // Parameters:
+    //   - term: The search term to filter groups (string).
+    //   - pageIndex: The page number to retrieve (int).
+    //   - pageSize: The number of items per page (int).
+    // Returns: An IActionResult containing the search results.
+    [HttpGet("search")]
+    public IActionResult SearchGroups(string term, int pageIndex, int pageSize)
+    {
+        var result = _groupService.SearchGroups(term, pageIndex, pageSize);
+        return Ok(result);
     }
 }
