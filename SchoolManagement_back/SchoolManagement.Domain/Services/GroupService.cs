@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace SchoolManagement.Domain.Services;
 public class GroupService : IGroupService
 {
-    private readonly SchoolManagementDbContext _context;
+    private readonly IGroupRepository _repository;
 
-    public GroupService(SchoolManagementDbContext context)
+    public GroupService(IGroupRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public class GroupService : IGroupService
     /// </summary>
     public async Task<int> CountAsync()
     {
-        return await _context.Groups.CountAsync();
+        return await _repository.CountAsync();
     }
 
     /// <summary>
@@ -30,9 +30,7 @@ public class GroupService : IGroupService
     /// </summary>
     public IEnumerable<Group> GetAll()
     {
-        return _context.Groups
-            .Include(c => c.Classroom)
-            .ToList();
+        return _repository.GetAll();
     }
 
     /// <summary>
@@ -40,11 +38,7 @@ public class GroupService : IGroupService
     /// </summary>
     public async Task<List<Group>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return await _context.Groups
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
-            .Include(c => c.Classroom)
-            .ToListAsync();
+       return _repository.GetWithPagination(pageNumber, pageSize);
     }
 
     /// <summary>
@@ -52,7 +46,7 @@ public class GroupService : IGroupService
     /// </summary>
     public Group GetById(int id)
     {
-        return _context.Groups.FirstOrDefault(g => g.Id == id);
+        return _repository.GetByIdAsync(id);
     }
 
     /// <summary>
@@ -60,8 +54,7 @@ public class GroupService : IGroupService
     /// </summary>
     public void CreateAsync(Group group)
     {
-         _context.Groups.AddAsync(group);
-         _context.SaveChangesAsync();
+        return _repository.AddAsync(person);
     }
 
     /// <summary>
@@ -69,17 +62,7 @@ public class GroupService : IGroupService
     /// </summary>
     public async Task<Group> UpdateGroupAsync(Group group)
     {
-        var existingGroup = await _context.Groups.FindAsync(group.Id);
-        if (existingGroup == null)
-        {
-            return null;
-        }
-
-        existingGroup.Name = group.Name; // Example of property update
-        _context.Groups.Update(existingGroup);
-        await _context.SaveChangesAsync();
-
-        return existingGroup;
+        return _repository.UpdateAsync(person);
     }
 
     /// <summary>
@@ -87,28 +70,14 @@ public class GroupService : IGroupService
     /// </summary>
     public void DeleteAsync(int id)
     {
-        // _context.Groups.Remove(id);
-        // _context.SaveChangesAsync();
+       return _repository.DeleteAsync(id);
     }
 
     /// <summary>
     /// Search groups by term with pagination.
     /// </summary>
-    public async Task<PagedResult<Group>> SearchGroups(string term, int pageIndex, int pageSize)
+    public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
     {
-        var query = _context.Groups
-            .Where(g => g.Name.Contains(term));
-
-        var totalCount = await query.CountAsync();
-        var items = await query
-            .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PagedResult<Group>
-        {
-            Items = items,
-            TotalCount = totalCount
-        };
+        return _repository.Search(id);
     }
 }

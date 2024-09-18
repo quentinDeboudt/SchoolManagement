@@ -11,11 +11,11 @@ namespace SchoolManagement.Domain.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly SchoolManagementDbContext _context;
+        private readonly IRoleRepository _repository;
 
-        public RoleService(SchoolManagementDbContext context)
+        public RoleService(IRoleRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public async Task<int> CountAsync()
         {
-            return await _context.Roles.CountAsync();
+            return await _repository.CountAsync();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public IEnumerable<Role> GetAll()
         {
-            return _context.Roles.ToList();
+            return _repository.GetAll();
         }
 
         /// <summary>
@@ -39,10 +39,7 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public async Task<List<Role>> GetWithPagination(int pageNumber, int pageSize)
         {
-            return await _context.Roles
-                .Skip(pageNumber * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+           return _repository.GetWithPagination(pageNumber, pageSize);
         }
 
         /// <summary>
@@ -50,7 +47,7 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public Role GetById(int id)
         {
-            return _context.Roles.FirstOrDefault(r => r.Id == id);
+            return _repository.GetByIdAsync(id);
         }
 
         /// <summary>
@@ -58,8 +55,7 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public void CreateAsync(Role role)
         {
-             _context.Roles.AddAsync(role);
-             _context.SaveChangesAsync();
+            return _repository.AddAsync(person);
         }
 
         /// <summary>
@@ -67,17 +63,7 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public async Task<Role> UpdateRoleAsync(Role role)
         {
-            var existingRole = await _context.Roles.FindAsync(role.Id);
-            if (existingRole == null)
-            {
-                return null;
-            }
-
-            existingRole.Name = role.Name; // Example of property update
-            _context.Roles.Update(existingRole);
-            await _context.SaveChangesAsync();
-
-            return existingRole;
+            return _repository.UpdateAsync(person);
         }
 
         /// <summary>
@@ -85,31 +71,15 @@ namespace SchoolManagement.Domain.Services
         /// </summary>
         public void DeleteAsync(int id)
         {
-            // var role =  _context.Roles.FindAsync(id);
-            // if (role != null){
-            //     _context.Roles.Remove(role);
-            // }
+           return _repository.DeleteAsync(id);
         }
 
         /// <summary>
         /// Search roles by term with pagination.
         /// </summary>
-        public async Task<PagedResult<Role>> SearchRoles(string term, int pageIndex, int pageSize)
+        public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
         {
-            var query = _context.Roles
-                .Where(r => r.Name.Contains(term));
-
-            var totalCount = await query.CountAsync();
-            var items = await query
-                .Skip(pageIndex * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return new PagedResult<Role>
-            {
-                Items = items,
-                TotalCount = totalCount
-            };
+            return _repository.Search(id);
         }
     }
 }

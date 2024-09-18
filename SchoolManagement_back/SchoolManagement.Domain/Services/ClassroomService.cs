@@ -11,11 +11,11 @@ namespace SchoolManagement.Domain.Services;
 
 public class ClassroomService : IClassroomService
 {
-    private readonly SchoolManagementDbContext _context;
+    private readonly IClassroomRepository _repository;
 
-    public ClassroomService(SchoolManagementDbContext context)
+    public ClassroomService(IClassroomRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<int> CountAsync()
     {
-        return await _context.Classrooms.CountAsync();
+        return _repository.CountAsync();
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public IEnumerable<Classroom> GetAll()
     {
-        return _context.Classrooms.ToList();
+        return _repository.GetAll();
     }
 
     /// <summary>
@@ -39,11 +39,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<List<Classroom>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return await _context.Classrooms
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
-            .Include(c => c.Groups)
-            .ToListAsync();
+        return _repository.GetWithPagination(pageNumber, pageSize);
     }
 
     /// <summary>
@@ -51,7 +47,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public Classroom GetById(int id)
     {
-        return _context.Classrooms.FirstOrDefault(c => c.Id == id);
+        return _repository.GetByIdAsync(id);
     }
 
     /// <summary>
@@ -59,8 +55,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public void CreateAsync(Classroom classroom)
     {
-        _context.Classrooms.AddAsync(classroom);
-        _context.SaveChangesAsync();
+       return _repository.AddAsync(person);
     }
 
     /// <summary>
@@ -68,17 +63,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<Classroom> UpdateClassroomAsync(Classroom classroom)
     {
-        var existingClassroom = await _context.Classrooms.FindAsync(classroom.Id);
-        if (existingClassroom == null)
-        {
-            return null;
-        }
-
-        existingClassroom.Name = classroom.Name; // Example of property update
-        _context.Classrooms.Update(existingClassroom);
-        await _context.SaveChangesAsync();
-
-        return existingClassroom;
+        return _repository.UpdateAsync(person);
     }
 
     /// <summary>
@@ -86,28 +71,14 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public void DeleteAsync(int id)
     {
-        // _context.Classrooms.Remove(id);
-        // _context.SaveChangesAsync();
+        return _repository.DeleteAsync(id);
     }
 
     /// <summary>
     /// Search classrooms by term with pagination.
     /// </summary>
-    public async Task<PagedResult<Classroom>> SearchClassrooms(string term, int pageIndex, int pageSize)
+    public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
     {
-        var query = _context.Classrooms
-            .Where(c => c.Name.Contains(term));
-
-        var totalCount = await query.CountAsync();
-        var items = await query
-            .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PagedResult<Classroom>
-        {
-            Items = items,
-            TotalCount = totalCount
-        };
+        return _repository.Search(id);
     }
 }
