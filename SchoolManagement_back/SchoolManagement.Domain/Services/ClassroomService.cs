@@ -1,11 +1,8 @@
-using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Infrastructure;
-using SchoolManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.IRepository;
 
 namespace SchoolManagement.Domain.Services;
 
@@ -23,15 +20,15 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<int> CountAsync()
     {
-        return _repository.CountAsync();
+        return await _repository.CountAsync();
     }
 
     /// <summary>
     /// Get all classrooms.
     /// </summary>
-    public IEnumerable<Classroom> GetAll()
+    public Task<IEnumerable<Classroom>> GetAllAsync()
     {
-        return _repository.GetAll();
+        return _repository.GetAllAsync();
     }
 
     /// <summary>
@@ -39,13 +36,13 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<List<Classroom>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return _repository.GetWithPagination(pageNumber, pageSize);
+        return await _repository.GetWithPagination(pageNumber, pageSize);
     }
 
     /// <summary>
     /// Get a specific classroom by ID.
     /// </summary>
-    public Classroom GetById(int id)
+    public Task<Classroom> GetByIdAsync(int id)
     {
         return _repository.GetByIdAsync(id);
     }
@@ -53,17 +50,17 @@ public class ClassroomService : IClassroomService
     /// <summary>
     /// Create a new classroom asynchronously.
     /// </summary>
-    public void CreateAsync(Classroom classroom)
+    public void AddAsync(Classroom classroom)
     {
-       return _repository.AddAsync(person);
+       _repository.AddAsync(classroom);
     }
 
     /// <summary>
     /// Update an existing classroom asynchronously.
     /// </summary>
-    public async Task<Classroom> UpdateClassroomAsync(Classroom classroom)
+    public async Task<Classroom> UpdateAsync(Classroom classroom)
     {
-        return _repository.UpdateAsync(person);
+        return await _repository.UpdateAsync(classroom);
     }
 
     /// <summary>
@@ -71,7 +68,7 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public void DeleteAsync(int id)
     {
-        return _repository.DeleteAsync(id);
+        _repository.DeleteAsync(id);
     }
 
     /// <summary>
@@ -79,6 +76,6 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
     {
-        return _repository.Search(id);
+        return await _repository.Search(term, pageIndex, pageSize);
     }
 }

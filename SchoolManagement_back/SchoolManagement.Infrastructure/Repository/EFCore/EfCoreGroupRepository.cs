@@ -1,8 +1,16 @@
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace SchoolManagement.Infrastructure.Repository.EFCore;
 public class EfCoreGroupRepository : IGroupRepository
 {
     private readonly SchoolManagementDbContext _context;
 
-    public GroupService(SchoolManagementDbContext context)
+    public EfCoreGroupRepository(SchoolManagementDbContext context)
     {
         _context = context;
     }
@@ -18,11 +26,11 @@ public class EfCoreGroupRepository : IGroupRepository
     /// <summary>
     /// Get all Groups with related entities.
     /// </summary>
-    public IEnumerable<Group> GetAll()
+    public async Task<IEnumerable<Group>> GetAllAsync()
     {
-        return _context.Groups
+        return await _context.Groups
             .Include(p => p.Classroom)
-            .ToList();
+            .ToListAsync();
     }
 
     /// <summary>
@@ -40,15 +48,15 @@ public class EfCoreGroupRepository : IGroupRepository
     /// <summary>
     /// Get a specific Group by ID.
     /// </summary>
-    public Group GetById(int id)
+    public async Task<Group> GetByIdAsync(int id)
     {
-        return _repository.Groups.FirstOrDefault(g => g.Id == id);
+        return await _context.Groups.FirstOrDefaultAsync(g => g.Id == id);
     }
 
     /// <summary>
     /// Create a new Group asynchronously.
     /// </summary>
-    public  void CreateAsync(Group Group)
+    public void AddAsync(Group Group)
     {
          _context.Groups.AddAsync(Group);
          _context.SaveChangesAsync();
@@ -57,17 +65,16 @@ public class EfCoreGroupRepository : IGroupRepository
     /// <summary>
     /// Update an existing Group asynchronously.
     /// </summary>
-    public async Task<Group> UpdateGroupAsync(Group Group)
+    public async Task<Group> UpdateAsync(Group group)
     {
-      var existingGroup = await _repository.Groups.FindAsync(group.Id);
+      var existingGroup = await _context.Groups.FindAsync(group.Id);
         if (existingGroup == null)
         {
             return null;
         }
 
-        existingGroup.Name = group.Name; // Example of property update
-        _repository.Groups.Update(existingGroup);
-        await _repository.SaveChangesAsync();
+        _context.Groups.Update(group);
+        await _context.SaveChangesAsync();
 
         return existingGroup;
     }
@@ -75,10 +82,15 @@ public class EfCoreGroupRepository : IGroupRepository
     /// <summary>
     /// Delete a Group by ID asynchronously.
     /// </summary>
-    public void DeleteAsync(int id)
+    public async void DeleteAsync(int id)
     {
-        _context.Groups.Remove(id);
-        _context.SaveChangesAsync();
+        var group = await _context.Groups.FindAsync(id);
+    
+        if (group != null)
+        {
+            _context.Groups.Remove(group);
+            await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>

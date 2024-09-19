@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Domain.Entities;
-using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
 
 namespace SchoolManagement.API.Controllers;
@@ -9,10 +9,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class LessonController : ControllerBase
 {
-    private readonly ILessonService _lessonService;
+    private readonly LessonService _lessonService;
 
     // Constructor for injecting the Lesson service.
-    public LessonController(ILessonService lessonService)
+    public LessonController(LessonService lessonService)
     {
         _lessonService = lessonService;
     }
@@ -31,7 +31,7 @@ public class LessonController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Lesson>> GetAll()
     {
-        var lessons = _lessonService.GetAll();
+        var lessons = _lessonService.GetAllAsync();
         return Ok(lessons);
     }
 
@@ -55,7 +55,7 @@ public class LessonController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Lesson> GetById(int id)
     {
-        var lesson = _lessonService.GetById(id);
+        var lesson = _lessonService.GetByIdAsync(id);
         if (lesson == null)
         {
             return NotFound();
@@ -72,7 +72,7 @@ public class LessonController : ControllerBase
     [HttpPost]
     public ActionResult Create([FromBody] Lesson lesson)
     {
-        _lessonService.CreateAsync(lesson);
+        _lessonService.AddAsync(lesson);
         return CreatedAtAction(nameof(GetById), new { id = lesson.Id }, lesson);
     }
 
@@ -89,7 +89,7 @@ public class LessonController : ControllerBase
             return BadRequest("Invalid lesson data");
         }
 
-        var updatedLesson = await _lessonService.UpdateLessonAsync(lesson);
+        var updatedLesson = await _lessonService.UpdateAsync(lesson);
         if (updatedLesson == null)
         {
             return NotFound("Lesson not found");
@@ -106,8 +106,7 @@ public class LessonController : ControllerBase
     [HttpDelete("delete/{id}")]
     public void Delete(int id)
     {
-        // _lessonService.Delete(id);
-        // return NoContent();
+        _lessonService.DeleteAsync(id);
     }
 
     // Search lessons by term with pagination.
@@ -117,9 +116,9 @@ public class LessonController : ControllerBase
     //   - pageSize: The number of items per page (int).
     // Returns: An IActionResult containing the search results.
     [HttpGet("search")]
-    public IActionResult SearchLessons(string term, int pageIndex, int pageSize)
+    public Task<PagedResult<Lesson>> SearchLessons(string term, int pageIndex, int pageSize)
     {
-        var result = _lessonService.SearchLessons(term, pageIndex, pageSize);
-        return Ok(result);
+        var result = _lessonService.Search(term, pageIndex, pageSize);
+        return result;
     }
 }

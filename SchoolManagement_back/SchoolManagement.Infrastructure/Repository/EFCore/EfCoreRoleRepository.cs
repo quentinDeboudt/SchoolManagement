@@ -1,8 +1,16 @@
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace SchoolManagement.Infrastructure.Repository.EFCore;
 public class EfCoreRoleRepository : IRoleRepository
 {
     private readonly SchoolManagementDbContext _context;
 
-    public RoleService(SchoolManagementDbContext context)
+    public EfCoreRoleRepository(SchoolManagementDbContext context)
     {
         _context = context;
     }
@@ -18,9 +26,9 @@ public class EfCoreRoleRepository : IRoleRepository
     /// <summary>
     /// Get all Roles with related entities.
     /// </summary>
-    public IEnumerable<Role> GetAll()
+    public async Task<IEnumerable<Role>> GetAllAsync()
     {
-        return _context.Roles.ToList();
+        return await _context.Roles.ToListAsync();
     }
 
     /// <summary>
@@ -37,15 +45,15 @@ public class EfCoreRoleRepository : IRoleRepository
     /// <summary>
     /// Get a specific Role by ID.
     /// </summary>
-    public Role GetById(int id)
+    public async Task<Role> GetByIdAsync(int id)
     {
-        return _repository.Roles.FirstOrDefault(r => r.Id == id);
+        return await _context.Roles.FirstOrDefaultAsync(r => r.Id == id);
     }
 
     /// <summary>
     /// Create a new Role asynchronously.
     /// </summary>
-    public  void CreateAsync(Role Role)
+    public void AddAsync(Role Role)
     {
          _context.Roles.AddAsync(Role);
          _context.SaveChangesAsync();
@@ -54,17 +62,16 @@ public class EfCoreRoleRepository : IRoleRepository
     /// <summary>
     /// Update an existing Role asynchronously.
     /// </summary>
-    public async Task<Role> UpdateRoleAsync(Role Role)
+    public async Task<Role> UpdateAsync(Role role)
     {
-        var existingRole = await _repository.Roles.FindAsync(role.Id);
+        var existingRole = await _context.Roles.FindAsync(role.Id);
             if (existingRole == null)
             {
                 return null;
             }
 
-            existingRole.Name = role.Name; // Example of property update
-            _repository.Roles.Update(existingRole);
-            await _repository.SaveChangesAsync();
+            _context.Roles.Update(role);
+            await _context.SaveChangesAsync();
 
             return existingRole;
     }
@@ -72,10 +79,15 @@ public class EfCoreRoleRepository : IRoleRepository
     /// <summary>
     /// Delete a Role by ID asynchronously.
     /// </summary>
-    public void DeleteAsync(int id)
+    public async void DeleteAsync(int id)
     {
-        _context.Roles.Remove(id);
-         _context.SaveChangesAsync();
+        var role = await _context.Roles.FindAsync(id);
+    
+        if (role != null)
+        {
+            _context.Roles.Remove(role);
+            await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>
@@ -84,7 +96,7 @@ public class EfCoreRoleRepository : IRoleRepository
     public async Task<PagedResult<Role>> Search(string term, int pageIndex, int pageSize)
     {
         var query = _context.Roles
-            .Where(p => p.name.Contains(term));
+            .Where(p => p.Name.Contains(term));
 
         var totalCount = await query.CountAsync();
 

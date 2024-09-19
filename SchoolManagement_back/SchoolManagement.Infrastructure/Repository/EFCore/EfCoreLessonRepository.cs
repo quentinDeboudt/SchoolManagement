@@ -1,8 +1,16 @@
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace SchoolManagement.Infrastructure.Repository.EFCore;
 public class EfCoreLessonRepository : ILessonRepository
 {
     private readonly SchoolManagementDbContext _context;
 
-    public LessonService(SchoolManagementDbContext context)
+    public EfCoreLessonRepository(SchoolManagementDbContext context)
     {
         _context = context;
     }
@@ -18,11 +26,11 @@ public class EfCoreLessonRepository : ILessonRepository
     /// <summary>
     /// Get all Lessons with related entities.
     /// </summary>
-    public IEnumerable<Lesson> GetAll()
+    public async Task<IEnumerable<Lesson>> GetAllAsync()
     {
-        return _context.Lessons
+        return await _context.Lessons
             .Include(p => p.Groups)
-            .ToList();
+            .ToListAsync();
     }
 
     /// <summary>
@@ -40,15 +48,15 @@ public class EfCoreLessonRepository : ILessonRepository
     /// <summary>
     /// Get a specific Lesson by ID.
     /// </summary>
-    public Lesson GetById(int id)
+    public async Task<Lesson> GetByIdAsync(int id)
     {
-        return _repository.Lessons.FirstOrDefault(l => l.Id == id);
+        return await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
     }
 
     /// <summary>
     /// Create a new Lesson asynchronously.
     /// </summary>
-    public  void CreateAsync(Lesson Lesson)
+    public void AddAsync(Lesson Lesson)
     {
          _context.Lessons.AddAsync(Lesson);
          _context.SaveChangesAsync();
@@ -57,34 +65,32 @@ public class EfCoreLessonRepository : ILessonRepository
     /// <summary>
     /// Update an existing Lesson asynchronously.
     /// </summary>
-    public async Task<Lesson> UpdateLessonAsync(Lesson Lesson)
+    public async Task<Lesson> UpdateAsync(Lesson lesson)
     {
-        var existingLesson = await _context.Lessons.FindAsync(Lesson.Id);
-        if (existingLesson == null)
-        {
-            return null;
-        }
+        var existingLesson = await _context.Lessons.FindAsync(lesson.Id);
+            if (existingLesson == null)
+            {
+                return null;
+            }
 
-        existingLesson.FirstName = Lesson.FirstName;
-        existingLesson.LastName = Lesson.LastName;
-        existingLesson.Roles = Lesson.Roles;
-        existingLesson.StudentGroups = Lesson.StudentGroups;
-        existingLesson.TeacherClassrooms = Lesson.TeacherClassrooms;
-        existingLesson.TeacherLessons = Lesson.TeacherLessons;
+            _context.Lessons.Update(lesson);
+            await _context.SaveChangesAsync();
 
-        _context.Lessons.Update(existingLesson);
-        await _context.SaveChangesAsync();
-
-        return existingLesson;
+            return existingLesson;
     }
 
     /// <summary>
     /// Delete a Lesson by ID asynchronously.
     /// </summary>
-    public void DeleteAsync(int id)
+    public async void DeleteAsync(int id)
     {
-        _context.Lessons.Remove(id);
-        _context.SaveChangesAsync();
+        var lesson = await _context.Lessons.FindAsync(id);
+    
+        if (lesson != null)
+        {
+            _context.Lessons.Remove(lesson);
+            await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>
@@ -93,7 +99,8 @@ public class EfCoreLessonRepository : ILessonRepository
     public async Task<PagedResult<Lesson>> Search(string term, int pageIndex, int pageSize)
     {
         var query = _context.Lessons
-            .Where(p => p.name.Contains(term));
+            .Include(l => l.Subject)
+            .Where(p => p.Subject.Name.Contains(term));
 
         var totalCount = await query.CountAsync();
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Domain.Entities;
-using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
 
 namespace SchoolManagement.API.Controllers;
@@ -9,10 +9,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class ClassroomController : ControllerBase
 {
-    private readonly IClassroomService _classroomService;
+    private readonly ClassroomService _classroomService;
 
     // Constructor for injecting the Classroom service.
-    public ClassroomController(IClassroomService classroomService)
+    public ClassroomController(ClassroomService classroomService)
     {
         _classroomService = classroomService;
     }
@@ -31,7 +31,7 @@ public class ClassroomController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Classroom>> GetAll()
     {
-        var classrooms = _classroomService.GetAll();
+        var classrooms = _classroomService.GetAllAsync();
         return Ok(classrooms);
     }
 
@@ -55,7 +55,7 @@ public class ClassroomController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Classroom> GetById(int id)
     {
-        var classroom = _classroomService.GetById(id);
+        var classroom = _classroomService.GetByIdAsync(id);
         if (classroom == null)
         {
             return NotFound();
@@ -72,7 +72,7 @@ public class ClassroomController : ControllerBase
     [HttpPost]
     public ActionResult Create([FromBody] Classroom classroom)
     {
-        _classroomService.CreateAsync(classroom);
+        _classroomService.AddAsync(classroom);
         return CreatedAtAction(nameof(GetById), new { id = classroom.Id }, classroom);
     }
 
@@ -89,7 +89,7 @@ public class ClassroomController : ControllerBase
             return BadRequest("Invalid classroom data");
         }
 
-        var updatedClassroom = await _classroomService.UpdateClassroomAsync(classroom);
+        var updatedClassroom = await _classroomService.UpdateAsync(classroom);
         if (updatedClassroom == null)
         {
             return NotFound("Classroom not found");
@@ -106,8 +106,7 @@ public class ClassroomController : ControllerBase
     [HttpDelete("delete/{id}")]
     public void DeleteAsync(int id)
     {
-        // _classroomService.DeleteAsync(id);
-
+        _classroomService.DeleteAsync(id);
     }
 
     // Search classrooms by term with pagination.
@@ -117,9 +116,9 @@ public class ClassroomController : ControllerBase
     //   - pageSize: The number of items per page (int).
     // Returns: An IActionResult containing the search results.
     [HttpGet("search")]
-    public IActionResult SearchClassrooms(string term, int pageIndex, int pageSize)
+    public Task<PagedResult<Classroom>> SearchClassrooms(string term, int pageIndex, int pageSize)
     {
-        var result = _classroomService.SearchClassrooms(term, pageIndex, pageSize);
-        return Ok(result);
+        var result = _classroomService.Search(term, pageIndex, pageSize);
+        return result;
     }
 }

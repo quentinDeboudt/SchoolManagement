@@ -1,11 +1,8 @@
-using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Infrastructure;
-using SchoolManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.IRepository;
 
 namespace SchoolManagement.Domain.Services;
 public class GroupService : IGroupService
@@ -28,9 +25,9 @@ public class GroupService : IGroupService
     /// <summary>
     /// Get all groups.
     /// </summary>
-    public IEnumerable<Group> GetAll()
+    public Task<IEnumerable<Group>> GetAllAsync()
     {
-        return _repository.GetAll();
+        return _repository.GetAllAsync();
     }
 
     /// <summary>
@@ -38,13 +35,13 @@ public class GroupService : IGroupService
     /// </summary>
     public async Task<List<Group>> GetWithPagination(int pageNumber, int pageSize)
     {
-       return _repository.GetWithPagination(pageNumber, pageSize);
+       return await _repository.GetWithPagination(pageNumber, pageSize);
     }
 
     /// <summary>
     /// Get a specific group by ID.
     /// </summary>
-    public Group GetById(int id)
+    public Task<Group> GetByIdAsync(int id)
     {
         return _repository.GetByIdAsync(id);
     }
@@ -52,17 +49,17 @@ public class GroupService : IGroupService
     /// <summary>
     /// Create a new group asynchronously.
     /// </summary>
-    public void CreateAsync(Group group)
+    public void AddAsync(Group group)
     {
-        return _repository.AddAsync(person);
+        _repository.AddAsync(group);
     }
 
     /// <summary>
     /// Update an existing group asynchronously.
     /// </summary>
-    public async Task<Group> UpdateGroupAsync(Group group)
+    public async Task<Group> UpdateAsync(Group group)
     {
-        return _repository.UpdateAsync(person);
+        return await _repository.UpdateAsync(group);
     }
 
     /// <summary>
@@ -70,14 +67,14 @@ public class GroupService : IGroupService
     /// </summary>
     public void DeleteAsync(int id)
     {
-       return _repository.DeleteAsync(id);
+       _repository.DeleteAsync(id);
     }
 
     /// <summary>
     /// Search groups by term with pagination.
     /// </summary>
-    public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
+    public async Task<PagedResult<Group>> Search(string term, int pageIndex, int pageSize)
     {
-        return _repository.Search(id);
+        return await _repository.Search(term, pageIndex, pageSize);
     }
 }

@@ -2,8 +2,8 @@ using SchoolManagement.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SchoolManagement.Domain.IRepository;
-public interface IClassroomRepository
+namespace SchoolManagement.Application.Interfaces;
+public interface IClassroomService
 {
     Task<int> CountAsync();
     Task<IEnumerable<Classroom>> GetAllAsync();

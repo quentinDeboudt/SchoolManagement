@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Domain.Entities;
-using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
 
 namespace SchoolManagement.API.Controllers;
@@ -9,10 +9,10 @@ namespace SchoolManagement.API.Controllers;
 [Route("api/[controller]")]
 public class PersonController : ControllerBase
 {
-    private readonly IPersonService _personService;
+    private readonly PersonService _personService;
 
     // Constructor for injecting the Person service.
-    public PersonController(IPersonService personService)
+    public PersonController(PersonService personService)
     {
         _personService = personService;
     }
@@ -31,7 +31,7 @@ public class PersonController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Person>> GetAll()
     {
-        var persons = _personService.GetAll();
+        var persons = _personService.GetAllAsync();
         return Ok(persons);
     }
 
@@ -55,7 +55,7 @@ public class PersonController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Person> GetById(int id)
     {
-        var person = _personService.GetById(id);
+        var person = _personService.GetByIdAsync(id);
         if (person == null)
         {
             return NotFound();
@@ -72,7 +72,7 @@ public class PersonController : ControllerBase
     [HttpPost]
     public ActionResult Create([FromBody] Person person)
     {
-        _personService.CreateAsync(person);
+        _personService.AddAsync(person);
         return CreatedAtAction(nameof(GetById), new { id = person.Id }, person);
     }
 
@@ -89,7 +89,7 @@ public class PersonController : ControllerBase
             return BadRequest("Invalid person data");
         }
 
-        var updatedPerson = await _personService.UpdatePersonAsync(person);
+        var updatedPerson = await _personService.UpdateAsync(person);
         if (updatedPerson == null)
         {
             return NotFound("Person not found");
@@ -116,9 +116,9 @@ public class PersonController : ControllerBase
     //   - pageSize: The number of items per page (int).
     // Returns: An IActionResult containing the search results.
     [HttpGet("search")]
-    public IActionResult SearchPersons(string term, int pageIndex, int pageSize)
+    public Task<PagedResult<Person>> SearchPersons(string term, int pageIndex, int pageSize)
     {
-        var result = _personService.SearchPersons(term, pageIndex, pageSize);
-        return Ok(result);
+        var result = _personService.Search(term, pageIndex, pageSize);
+        return result;
     }
 }

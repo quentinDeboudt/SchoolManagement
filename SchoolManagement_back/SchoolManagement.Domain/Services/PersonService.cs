@@ -1,15 +1,11 @@
-using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Domain.IRepository;
-using SchoolManagement.Infrastructure;
-using SchoolManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.IRepository;
 
 namespace SchoolManagement.Domain.Services;
-public class PersonService : IPersonService
+public class PersonService: IPersonService
 {
     private readonly IPersonRepository _repository;
 
@@ -20,15 +16,15 @@ public class PersonService : IPersonService
 
     // Get the total count of persons.
     // Returns: An ActionResult containing the total count of persons as an integer.
-    public Task<int> CountAsync(){
-        return _repository.CountAsync();
+    public async Task<int> CountAsync(){
+        return await _repository.CountAsync();
     }
 
     // Get all persons without pagination.
     // Returns: An ActionResult containing a list of all persons.
-    public Task<IEnumerable<Person>> GetAll()
+    public Task<IEnumerable<Person>> GetAllAsync()
     {
-        return _repository.GetAll();
+        return _repository.GetAllAsync();
     }
 
     // Get persons with pagination.
@@ -36,9 +32,9 @@ public class PersonService : IPersonService
     //   - pageNumber: The page number to retrieve (int).
     //   - pageSize: The number of items per page (int).
     // Returns: A Task containing a list of persons for the specified page.
-    public Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
+    public async Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return _repository.GetWithPagination(pageNumber, pageSize);
+        return await _repository.GetWithPagination(pageNumber, pageSize);
     }
 
     // Get a specific person by ID.
@@ -54,32 +50,32 @@ public class PersonService : IPersonService
     // Parameters:
     //   - person: The person entity to create (Person).
     // Returns: An ActionResult indicating the result of the creation.
-    public Task AddAsync(Person person)
+    public void AddAsync(Person person)
     {
-        return _repository.AddAsync(person);
+        _repository.AddAsync(person);
     }
 
     // Update an existing person.
     // Parameters:
     //   - person: The updated person entity (Person).
     // Returns: An IActionResult indicating the result of the update.
-    public Task UpdateAsync(Person person)
+    public async Task<Person> UpdateAsync(Person person)
     {
-        return _repository.UpdateAsync(person);
+        return await _repository.UpdateAsync(person);
     }
 
     // Delete a person by ID.
     // Parameters:
     //   - id: The ID of the person to delete (int).
     // Returns: An ActionResult indicating the result of the deletion.
-    public Task DeleteAsync(int id)
+    public void DeleteAsync(int id)
     {
-        return _repository.DeleteAsync(id);
+        _repository.DeleteAsync(id);
     }
 
-    public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
+    public async Task<PagedResult<Person>> Search(string term, int pageIndex, int pageSize)
     {
-        return _repository.Search(id);
+        return await _repository.Search(term, pageIndex, pageSize);
     }
 
 }

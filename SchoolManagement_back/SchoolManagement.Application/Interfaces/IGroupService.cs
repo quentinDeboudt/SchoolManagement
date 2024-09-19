@@ -2,8 +2,8 @@ using SchoolManagement.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SchoolManagement.Domain.IRepository;
-public interface IGroupRepository
+namespace SchoolManagement.Application.Interfaces;
+public interface IGroupService
 {
     Task<int> CountAsync();
     Task<IEnumerable<Group>> GetAllAsync();

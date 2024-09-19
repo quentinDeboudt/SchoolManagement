@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Domain.Entities;
-using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
 
 namespace SchoolManagement.API.Controllers;
@@ -9,10 +9,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class GroupController : ControllerBase
 {
-    private readonly IGroupService _groupService;
+    private readonly GroupService _groupService;
 
     // Constructor for injecting the Group service.
-    public GroupController(IGroupService groupService)
+    public GroupController(GroupService groupService)
     {
         _groupService = groupService;
     }
@@ -31,7 +31,7 @@ public class GroupController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Group>> GetAll()
     {
-        var groups = _groupService.GetAll();
+        var groups = _groupService.GetAllAsync();
         return Ok(groups);
     }
 
@@ -55,7 +55,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Group> GetById(int id)
     {
-        var group = _groupService.GetById(id);
+        var group = _groupService.GetByIdAsync(id);
         if (group == null)
         {
             return NotFound();
@@ -72,7 +72,7 @@ public class GroupController : ControllerBase
     [HttpPost]
     public ActionResult Create([FromBody] Group group)
     {
-        _groupService.CreateAsync(group);
+        _groupService.AddAsync(group);
         return CreatedAtAction(nameof(GetById), new { id = group.Id }, group);
     }
 
@@ -89,7 +89,7 @@ public class GroupController : ControllerBase
             return BadRequest("Invalid group data");
         }
 
-        var updatedGroup = await _groupService.UpdateGroupAsync(group);
+        var updatedGroup = await _groupService.UpdateAsync(group);
         if (updatedGroup == null)
         {
             return NotFound("Group not found");
@@ -116,9 +116,9 @@ public class GroupController : ControllerBase
     //   - pageSize: The number of items per page (int).
     // Returns: An IActionResult containing the search results.
     [HttpGet("search")]
-    public IActionResult SearchGroups(string term, int pageIndex, int pageSize)
+    public Task<PagedResult<Group>> SearchGroups(string term, int pageIndex, int pageSize)
     {
-        var result = _groupService.SearchGroups(term, pageIndex, pageSize);
-        return Ok(result);
+        var result = _groupService.Search(term, pageIndex, pageSize);
+        return result;
     }
 }

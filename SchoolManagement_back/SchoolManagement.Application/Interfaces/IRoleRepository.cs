@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-namespace SchoolManagement.Domain.IRepository;
-public interface IRoleRepository
+namespace SchoolManagement.Application.Interfaces;
+public interface IRoleService
 {
     Task<int> CountAsync();
     Task<IEnumerable<Role>> GetAllAsync();

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-namespace SchoolManagement.Domain.IRepository;
-public interface ILessonRepository
+namespace SchoolManagement.Application.Interfaces;
+public interface ILessonService
 {
     Task<int> CountAsync();
     Task<IEnumerable<Lesson>> GetAllAsync();

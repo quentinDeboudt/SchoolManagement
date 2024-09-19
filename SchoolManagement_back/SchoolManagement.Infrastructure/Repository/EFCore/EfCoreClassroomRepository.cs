@@ -1,8 +1,16 @@
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Entities;  
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace SchoolManagement.Infrastructure.Repository.EFCore;
 public class EfCoreClassroomRepository : IClassroomRepository
 {
     private readonly SchoolManagementDbContext _context;
 
-    public ClassroomService(SchoolManagementDbContext context)
+    public EfCoreClassroomRepository(SchoolManagementDbContext context)
     {
         _context = context;
     }
@@ -18,11 +26,11 @@ public class EfCoreClassroomRepository : IClassroomRepository
     /// <summary>
     /// Get all Classrooms with related entities.
     /// </summary>
-    public IEnumerable<Classroom> GetAll()
+    public async Task<IEnumerable<Classroom>> GetAllAsync()
     {
-        return _context.Classrooms
-            .Include(p => p.Roles)
-            .ToList();
+        return await _context.Classrooms
+            .Include(p => p.Groups)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -40,39 +48,35 @@ public class EfCoreClassroomRepository : IClassroomRepository
     /// <summary>
     /// Get a specific Classroom by ID.
     /// </summary>
-    public Classroom GetById(int id)
+    public async Task<Classroom> GetByIdAsync(int id)
     {
-        return _context.Classrooms
-            .Include(p => p.Roles)
-            .Include(p => p.StudentGroups)
-            .Include(p => p.TeacherClassrooms)
-            .Include(p => p.TeacherLessons)
-            .FirstOrDefault(p => p.Id == id);
+        return await _context.Classrooms
+            .FirstOrDefaultAsync(p => p.Id == id);
+            
     }
 
     /// <summary>
     /// Create a new Classroom asynchronously.
     /// </summary>
-    public  void CreateAsync(Classroom classroom)
+    public void AddAsync(Classroom classroom)
     {
-         _context.Classrooms.AddAsync(classroom);
-         _context.SaveChangesAsync();
+        _context.Classrooms.AddAsync(classroom);
+        _context.SaveChangesAsync();
     }
 
     /// <summary>
     /// Update an existing Classroom asynchronously.
     /// </summary>
-    public async Task<Classroom> UpdateClassroomAsync(Classroom classroom)
+    public async Task<Classroom> UpdateAsync(Classroom classroom)
     {
-        var existingClassroom = await _repository.Classrooms.FindAsync(classroom.Id);
+        var existingClassroom = await _context.Classrooms.FindAsync(classroom.Id);
         if (existingClassroom == null)
         {
             return null;
         }
 
-        existingClassroom.Name = classroom.Name; // Example of property update
-        _repository.Classrooms.Update(existingClassroom);
-        await _repository.SaveChangesAsync();
+        _context.Classrooms.Update(classroom);
+        await _context.SaveChangesAsync();
 
         return existingClassroom;
     }
@@ -80,10 +84,15 @@ public class EfCoreClassroomRepository : IClassroomRepository
     /// <summary>
     /// Delete a Classroom by ID asynchronously.
     /// </summary>
-    public void DeleteAsync(int id)
+    public async void DeleteAsync(int id)
     {
-        _context.Classrooms.Remove(id);
-        _context.SaveChangesAsync();
+        var classrooms = await _context.Classrooms.FindAsync(id);
+    
+        if (classrooms != null)
+        {
+           _context.Classrooms.Remove(classrooms);
+           await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>
@@ -91,7 +100,7 @@ public class EfCoreClassroomRepository : IClassroomRepository
     /// </summary>
     public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
     {
-       var query = _repository.Classrooms
+        var query = _context.Classrooms
             .Where(c => c.Name.Contains(term));
 
         var totalCount = await query.CountAsync();

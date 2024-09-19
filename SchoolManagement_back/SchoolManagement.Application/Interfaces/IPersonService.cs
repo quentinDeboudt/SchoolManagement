@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-namespace SchoolManagement.Domain.IRepository;
-public interface IPersonRepository
+namespace SchoolManagement.Application.Interfaces;
+public interface IPersonService
 {
     Task<int> CountAsync();
     Task<IEnumerable<Person>> GetAllAsync();

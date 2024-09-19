@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Domain.Services;
-using SchoolManagement.Infrastructure;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Infrastructure.Repository.EFCore;
+using SchoolManagement.Domain.Services;
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +32,16 @@ builder.Services.AddScoped<IClassroomService, ClassroomService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+
+// Repository
+
+builder.Services.AddScoped<IPersonRepository, EfCorePersonRepository>();
+builder.Services.AddScoped<IRoleRepository, EfCoreRoleRepository>();
+builder.Services.AddScoped<IClassroomRepository, EfCoreClassroomRepository>();
+builder.Services.AddScoped<IGroupRepository, EfCoreGroupRepository>();
+builder.Services.AddScoped<ILessonRepository, EfCoreLessonRepository>();
+builder.Services.AddScoped<ISubjectRepository, EfCoreSubjectRepository>();
+
 
 // Configurer DbContext avec SQL Server
 builder.Services.AddDbContext<SchoolManagementDbContext>(options =>
@@ -59,3 +72,64 @@ app.UseAuthorization(); // Ajoute l'autorisation si nécessaire
 app.MapControllers(); // Mappe les contrôleurs
 
 app.Run();
+
+
+
+
+
+
+// SchoolManagement
+// │
+// ├── SchoolManagement.API
+// │   └── Controllers
+// │       ├── ClassroomController.cs
+// │       ├── GroupController.cs
+// │       ├── LessonController.cs
+// │       ├── PersonController.cs
+// │       ├── RoleController.cs
+// │       └── SubjectController.cs
+// │
+// ├── SchoolManagement.Domain
+// │   ├── Entities
+// │   │   ├── Person.cs
+// │   │   ├── Group.cs
+// │   │   ├── Role.cs
+// │   │   └── PagedResult.cs
+// │   │
+// │   ├── IRepository
+// │   │   ├── IClassroomRepository.cs
+// │   │   ├── IGroupRepository.cs
+// │   │   ├── ILessonRepository.cs
+// │   │   ├── IPersonRepository.cs
+// │   │   ├── IRoleRepository.cs
+// │   │   └── ISubjectRepository.cs
+// │   │
+// │   └── Services
+// │       ├── ClassroomService.cs
+// │       ├── GroupService.cs
+// │       ├── LessonService.cs
+// │       ├── PersonService.cs
+// │       ├── RoleService.cs
+// │       └── SubjectService.cs
+// │
+// └── SchoolManagement.Infrastructure
+//     ├── Repositories
+//     │   ├── EFCore
+//     │   │   ├── EfCoreClassroomRepository.cs
+//     │   │   ├── EfCoreGroupRepository.cs
+//     │   │   ├── EfCoreLessonRepository.cs
+//     │   │   ├── EfCorePersonRepository.cs
+//     │   │   ├── EfCoreRoleRepository.cs
+//     │   │   └── EfCoreSubjectRepository.cs
+//     │   │
+//     │   └── SQL
+//     │       ├── EfCoreClassroomRepository.cs
+//     │       ├── EfCoreGroupRepository.cs
+//     │       ├── EfCoreLessonRepository.cs
+//     │       ├── EfCorePersonRepository.cs
+//     │       ├── EfCoreRoleRepository.cs
+//     │       └── EfCoreSubjectRepository.cs
+//     │    
+//     └── DbContext
+//         └── SchoolManagementDbContext.cs
+ 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Domain.Entities;
-using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
 
 namespace SchoolManagement.API.Controllers;
@@ -9,10 +9,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class RoleController : ControllerBase
 {
-    private readonly IRoleService _roleService;
+    private readonly RoleService _roleService;
 
     // Constructor for injecting the Role service.
-    public RoleController(IRoleService roleService)
+    public RoleController(RoleService roleService)
     {
         _roleService = roleService;
     }
@@ -31,7 +31,7 @@ public class RoleController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Role>> GetAll()
     {
-        var roles = _roleService.GetAll();
+        var roles = _roleService.GetAllAsync();
         return Ok(roles);
     }
 
@@ -55,7 +55,7 @@ public class RoleController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Role> GetById(int id)
     {
-        var role = _roleService.GetById(id);
+        var role = _roleService.GetByIdAsync(id);
         if (role == null)
         {
             return NotFound();
@@ -72,7 +72,7 @@ public class RoleController : ControllerBase
     [HttpPost]
     public ActionResult Create([FromBody] Role role)
     {
-        _roleService.CreateAsync(role);
+        _roleService.AddAsync(role);
         return CreatedAtAction(nameof(GetById), new { id = role.Id }, role);
     }
 
@@ -89,7 +89,7 @@ public class RoleController : ControllerBase
             return BadRequest("Invalid role data");
         }
 
-        var updatedRole = await _roleService.UpdateRoleAsync(role);
+        var updatedRole = await _roleService.UpdateAsync(role);
         if (updatedRole == null)
         {
             return NotFound("Role not found");
@@ -116,9 +116,9 @@ public class RoleController : ControllerBase
     //   - pageSize: The number of items per page (int).
     // Returns: An IActionResult containing the search results.
     [HttpGet("search")]
-    public IActionResult SearchRoles(string term, int pageIndex, int pageSize)
+    public Task<PagedResult<Role>> SearchRoles(string term, int pageIndex, int pageSize)
     {
-        var result = _roleService.SearchRoles(term, pageIndex, pageSize);
-        return Ok(result);
+        var result = _roleService.Search(term, pageIndex, pageSize);
+        return result;
     }
 }

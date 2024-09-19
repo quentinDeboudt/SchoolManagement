@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-namespace SchoolManagement.Domain.IRepository;
-public interface ISubjectRepository
+namespace SchoolManagement.Application.Interfaces;
+public interface ISubjectService
 {
     Task<int> CountAsync();
     Task<IEnumerable<Subject>> GetAllAsync();

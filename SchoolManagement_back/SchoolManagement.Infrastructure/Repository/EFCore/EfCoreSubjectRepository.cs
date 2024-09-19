@@ -1,8 +1,16 @@
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace SchoolManagement.Infrastructure.Repository.EFCore;
 public class EfCoreSubjectRepository : ISubjectRepository
 {
     private readonly SchoolManagementDbContext _context;
 
-    public SubjectService(SchoolManagementDbContext context)
+    public EfCoreSubjectRepository(SchoolManagementDbContext context)
     {
         _context = context;
     }
@@ -18,9 +26,9 @@ public class EfCoreSubjectRepository : ISubjectRepository
     /// <summary>
     /// Get all Subjects with related entities.
     /// </summary>
-    public IEnumerable<Subject> GetAll()
+    public async Task<IEnumerable<Subject>> GetAllAsync()
     {
-        return _context.Subjects.ToList();
+        return await _context.Subjects.ToListAsync();
     }
 
     /// <summary>
@@ -37,15 +45,15 @@ public class EfCoreSubjectRepository : ISubjectRepository
     /// <summary>
     /// Get a specific Subject by ID.
     /// </summary>
-    public Subject GetById(int id)
+    public async Task<Subject> GetByIdAsync(int id)
     {
-        return _repository.Subject.FirstOrDefault(s => s.Id == id);
+        return await _context.Subjects.FirstOrDefaultAsync(s => s.Id == id);
     }
 
     /// <summary>
     /// Create a new Subject asynchronously.
     /// </summary>
-    public  void CreateAsync(Subject Subject)
+    public void AddAsync(Subject Subject)
     {
          _context.Subjects.AddAsync(Subject);
          _context.SaveChangesAsync();
@@ -54,7 +62,7 @@ public class EfCoreSubjectRepository : ISubjectRepository
     /// <summary>
     /// Update an existing Subject asynchronously.
     /// </summary>
-    public async Task<Subject> UpdateSubjectAsync(Subject Subject)
+    public async Task<Subject> UpdateAsync(Subject Subject)
     {
         var existingSubject = await _context.Subjects.FindAsync(Subject.Id);
         if (existingSubject == null)
@@ -62,14 +70,7 @@ public class EfCoreSubjectRepository : ISubjectRepository
             return null;
         }
 
-        existingSubject.FirstName = Subject.FirstName;
-        existingSubject.LastName = Subject.LastName;
-        existingSubject.Roles = Subject.Roles;
-        existingSubject.StudentGroups = Subject.StudentGroups;
-        existingSubject.TeacherClassrooms = Subject.TeacherClassrooms;
-        existingSubject.TeacherLessons = Subject.TeacherLessons;
-
-        _context.Subjects.Update(existingSubject);
+        _context.Subjects.Update(Subject);
         await _context.SaveChangesAsync();
 
         return existingSubject;
@@ -78,10 +79,15 @@ public class EfCoreSubjectRepository : ISubjectRepository
     /// <summary>
     /// Delete a Subject by ID asynchronously.
     /// </summary>
-    public void DeleteAsync(int id)
+    public async void DeleteAsync(int id)
     {
-        _context.Subjects.Remove(id);
-         _context.SaveChangesAsync();
+        var subject = await _context.Subjects.FindAsync(id);
+    
+        if (subject != null)
+        {
+            _context.Subjects.Remove(subject);
+            await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>
@@ -90,7 +96,7 @@ public class EfCoreSubjectRepository : ISubjectRepository
     public async Task<PagedResult<Subject>> Search(string term, int pageIndex, int pageSize)
     {
         var query = _context.Subjects
-            .Where(p => p.name.Contains(term));
+            .Where(p => p.Name.Contains(term));
 
         var totalCount = await query.CountAsync();
 

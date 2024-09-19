@@ -1,8 +1,16 @@
+using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace SchoolManagement.Infrastructure.Repository.EFCore;
 public class EfCorePersonRepository : IPersonRepository
 {
     private readonly SchoolManagementDbContext _context;
 
-    public PersonService(SchoolManagementDbContext context)
+    public EfCorePersonRepository(SchoolManagementDbContext context)
     {
         _context = context;
     }
@@ -18,11 +26,11 @@ public class EfCorePersonRepository : IPersonRepository
     /// <summary>
     /// Get all persons with related entities.
     /// </summary>
-    public IEnumerable<Person> GetAll()
+    public async Task<IEnumerable<Person>> GetAllAsync()
     {
-        return _context.Persons
+        return await _context.Persons
             .Include(p => p.Roles)
-            .ToList();
+            .ToListAsync();
     }
 
     /// <summary>
@@ -40,20 +48,16 @@ public class EfCorePersonRepository : IPersonRepository
     /// <summary>
     /// Get a specific person by ID.
     /// </summary>
-    public Person GetById(int id)
+    public async Task<Person> GetByIdAsync(int id)
     {
-        return _context.Persons
-            .Include(p => p.Roles)
-            .Include(p => p.StudentGroups)
-            .Include(p => p.TeacherClassrooms)
-            .Include(p => p.TeacherLessons)
-            .FirstOrDefault(p => p.Id == id);
+        return await _context.Persons
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     /// <summary>
     /// Create a new person asynchronously.
     /// </summary>
-    public  void CreateAsync(Person person)
+    public void AddAsync(Person person)
     {
          _context.Persons.AddAsync(person);
          _context.SaveChangesAsync();
@@ -62,7 +66,7 @@ public class EfCorePersonRepository : IPersonRepository
     /// <summary>
     /// Update an existing person asynchronously.
     /// </summary>
-    public async Task<Person> UpdatePersonAsync(Person person)
+    public async Task<Person> UpdateAsync(Person person)
     {
         var existingPerson = await _context.Persons.FindAsync(person.Id);
         if (existingPerson == null)
@@ -70,14 +74,7 @@ public class EfCorePersonRepository : IPersonRepository
             return null;
         }
 
-        existingPerson.FirstName = person.FirstName;
-        existingPerson.LastName = person.LastName;
-        existingPerson.Roles = person.Roles;
-        existingPerson.StudentGroups = person.StudentGroups;
-        existingPerson.TeacherClassrooms = person.TeacherClassrooms;
-        existingPerson.TeacherLessons = person.TeacherLessons;
-
-        _context.Persons.Update(existingPerson);
+        _context.Persons.Update(person);
         await _context.SaveChangesAsync();
 
         return existingPerson;
@@ -86,10 +83,16 @@ public class EfCorePersonRepository : IPersonRepository
     /// <summary>
     /// Delete a person by ID asynchronously.
     /// </summary>
-    public void DeleteAsync(int id)
+    public async void DeleteAsync(int id)
     {
-        // _context.Persons.Remove(id);
-        //  _context.SaveChangesAsync();
+
+        var person = await _context.Persons.FindAsync(id);
+
+        if (person != null)
+        {
+            _context.Persons.Remove(person);
+            await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>
