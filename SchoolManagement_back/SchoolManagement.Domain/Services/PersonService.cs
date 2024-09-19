@@ -1,126 +1,81 @@
-using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Infrastructure;
-using SchoolManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.IRepository;
 
 namespace SchoolManagement.Domain.Services;
-public class PersonService : IPersonService
+public class PersonService: IPersonService
 {
-    private readonly SchoolManagementDbContext _context;
+    private readonly IPersonRepository _repository;
 
-    public PersonService(SchoolManagementDbContext context)
+    public PersonService(IPersonRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
-    /// <summary>
-    /// Get the total count of persons asynchronously.
-    /// </summary>
-    public async Task<int> CountAsync()
-    {
-        return await _context.Persons.CountAsync();
+    // Get the total count of persons.
+    // Returns: An ActionResult containing the total count of persons as an integer.
+    public async Task<int> CountAsync(){
+        return await _repository.CountAsync();
     }
 
-    /// <summary>
-    /// Get all persons with related entities.
-    /// </summary>
-    public IEnumerable<Person> GetAll()
+    // Get all persons without pagination.
+    // Returns: An ActionResult containing a list of all persons.
+    public Task<IEnumerable<Person>> GetAllAsync()
     {
-        return _context.Persons
-            .Include(p => p.Roles)
-            .ToList();
+        return _repository.GetAllAsync();
     }
 
-    /// <summary>
-    /// Get persons with pagination asynchronously.
-    /// </summary>
+    // Get persons with pagination.
+    // Parameters:
+    //   - pageNumber: The page number to retrieve (int).
+    //   - pageSize: The number of items per page (int).
+    // Returns: A Task containing a list of persons for the specified page.
     public async Task<List<Person>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return await _context.Persons
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
-            .Include(p => p.Roles)
-            .ToListAsync();
+        return await _repository.GetWithPagination(pageNumber, pageSize);
     }
 
-    /// <summary>
-    /// Get a specific person by ID.
-    /// </summary>
-    public Person GetById(int id)
+    // Get a specific person by ID.
+    // Parameters:
+    //   - id: The ID of the person to retrieve (int).
+    // Returns: An ActionResult containing the person with the specified ID.
+    public Task<Person> GetByIdAsync(int id)
     {
-        return _context.Persons
-            .Include(p => p.Roles)
-            .Include(p => p.StudentGroups)
-            .Include(p => p.TeacherClassrooms)
-            .Include(p => p.TeacherLessons)
-            .FirstOrDefault(p => p.Id == id);
+        return _repository.GetByIdAsync(id);
     }
 
-    /// <summary>
-    /// Create a new person asynchronously.
-    /// </summary>
-    public  void CreateAsync(Person person)
+    // Create a new person.
+    // Parameters:
+    //   - person: The person entity to create (Person).
+    // Returns: An ActionResult indicating the result of the creation.
+    public void AddAsync(Person person)
     {
-         _context.Persons.AddAsync(person);
-         _context.SaveChangesAsync();
+        _repository.AddAsync(person);
     }
 
-    /// <summary>
-    /// Update an existing person asynchronously.
-    /// </summary>
-    public async Task<Person> UpdatePersonAsync(Person person)
+    // Update an existing person.
+    // Parameters:
+    //   - person: The updated person entity (Person).
+    // Returns: An IActionResult indicating the result of the update.
+    public async Task<Person> UpdateAsync(Person person)
     {
-        var existingPerson = await _context.Persons.FindAsync(person.Id);
-        if (existingPerson == null)
-        {
-            return null;
-        }
-
-        existingPerson.FirstName = person.FirstName;
-        existingPerson.LastName = person.LastName;
-        existingPerson.Roles = person.Roles;
-        existingPerson.StudentGroups = person.StudentGroups;
-        existingPerson.TeacherClassrooms = person.TeacherClassrooms;
-        existingPerson.TeacherLessons = person.TeacherLessons;
-
-        _context.Persons.Update(existingPerson);
-        await _context.SaveChangesAsync();
-
-        return existingPerson;
+        return await _repository.UpdateAsync(person);
     }
 
-    /// <summary>
-    /// Delete a person by ID asynchronously.
-    /// </summary>
+    // Delete a person by ID.
+    // Parameters:
+    //   - id: The ID of the person to delete (int).
+    // Returns: An ActionResult indicating the result of the deletion.
     public void DeleteAsync(int id)
     {
-        // _context.Persons.Remove(id);
-        //  _context.SaveChangesAsync();
+        _repository.DeleteAsync(id);
     }
 
-    /// <summary>
-    /// Search persons by term with pagination.
-    /// </summary>
-    public async Task<PagedResult<Person>> SearchPersons(string term, int pageIndex, int pageSize)
+    public async Task<PagedResult<Person>> Search(string term, int pageIndex, int pageSize)
     {
-        var query = _context.Persons
-            .Where(p => p.FirstName.Contains(term) || p.LastName.Contains(term));
-
-        var totalCount = await query.CountAsync();
-
-        var items = await query
-            .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PagedResult<Person>
-        {
-            Items = items,
-            TotalCount = totalCount
-        };
+        return await _repository.Search(term, pageIndex, pageSize);
     }
+
 }

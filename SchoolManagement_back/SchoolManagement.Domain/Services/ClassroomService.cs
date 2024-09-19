@@ -1,21 +1,18 @@
-using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Infrastructure;
-using SchoolManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
+using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.IRepository;
 
 namespace SchoolManagement.Domain.Services;
 
 public class ClassroomService : IClassroomService
 {
-    private readonly SchoolManagementDbContext _context;
+    private readonly IClassroomRepository _repository;
 
-    public ClassroomService(SchoolManagementDbContext context)
+    public ClassroomService(IClassroomRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
     /// <summary>
@@ -23,15 +20,15 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<int> CountAsync()
     {
-        return await _context.Classrooms.CountAsync();
+        return await _repository.CountAsync();
     }
 
     /// <summary>
     /// Get all classrooms.
     /// </summary>
-    public IEnumerable<Classroom> GetAll()
+    public Task<IEnumerable<Classroom>> GetAllAsync()
     {
-        return _context.Classrooms.ToList();
+        return _repository.GetAllAsync();
     }
 
     /// <summary>
@@ -39,46 +36,31 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public async Task<List<Classroom>> GetWithPagination(int pageNumber, int pageSize)
     {
-        return await _context.Classrooms
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
-            .Include(c => c.Groups)
-            .ToListAsync();
+        return await _repository.GetWithPagination(pageNumber, pageSize);
     }
 
     /// <summary>
     /// Get a specific classroom by ID.
     /// </summary>
-    public Classroom GetById(int id)
+    public Task<Classroom> GetByIdAsync(int id)
     {
-        return _context.Classrooms.FirstOrDefault(c => c.Id == id);
+        return _repository.GetByIdAsync(id);
     }
 
     /// <summary>
     /// Create a new classroom asynchronously.
     /// </summary>
-    public void CreateAsync(Classroom classroom)
+    public void AddAsync(Classroom classroom)
     {
-        _context.Classrooms.AddAsync(classroom);
-        _context.SaveChangesAsync();
+       _repository.AddAsync(classroom);
     }
 
     /// <summary>
     /// Update an existing classroom asynchronously.
     /// </summary>
-    public async Task<Classroom> UpdateClassroomAsync(Classroom classroom)
+    public async Task<Classroom> UpdateAsync(Classroom classroom)
     {
-        var existingClassroom = await _context.Classrooms.FindAsync(classroom.Id);
-        if (existingClassroom == null)
-        {
-            return null;
-        }
-
-        existingClassroom.Name = classroom.Name; // Example of property update
-        _context.Classrooms.Update(existingClassroom);
-        await _context.SaveChangesAsync();
-
-        return existingClassroom;
+        return await _repository.UpdateAsync(classroom);
     }
 
     /// <summary>
@@ -86,28 +68,14 @@ public class ClassroomService : IClassroomService
     /// </summary>
     public void DeleteAsync(int id)
     {
-        // _context.Classrooms.Remove(id);
-        // _context.SaveChangesAsync();
+        _repository.DeleteAsync(id);
     }
 
     /// <summary>
     /// Search classrooms by term with pagination.
     /// </summary>
-    public async Task<PagedResult<Classroom>> SearchClassrooms(string term, int pageIndex, int pageSize)
+    public async Task<PagedResult<Classroom>> Search(string term, int pageIndex, int pageSize)
     {
-        var query = _context.Classrooms
-            .Where(c => c.Name.Contains(term));
-
-        var totalCount = await query.CountAsync();
-        var items = await query
-            .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PagedResult<Classroom>
-        {
-            Items = items,
-            TotalCount = totalCount
-        };
+        return await _repository.Search(term, pageIndex, pageSize);
     }
 }
