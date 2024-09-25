@@ -4,9 +4,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using SchoolManagement.Application.Interfaces;
-using SchoolManagement.Infrastructure.Repository.EFCore;
-using SchoolManagement.Domain.Services;
+using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.IRepository;
+using SchoolManagement.Domain.Services;
+using SchoolManagement.Infrastructure.Repository.EFCore;
 using SchoolManagement.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class SubjectController : ControllerBase
 {
-    private readonly SubjectService _subjectService;
+    private readonly ISubjectService _subjectService;
 
     // Constructor for injecting the Subject service.
-    public SubjectController(SubjectService subjectService)
+    public SubjectController(ISubjectService subjectService)
     {
         _subjectService = subjectService;
     }

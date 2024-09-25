@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class RoleController : ControllerBase
 {
-    private readonly RoleService _roleService;
+    private readonly IRoleService _roleService;
 
     // Constructor for injecting the Role service.
-    public RoleController(RoleService roleService)
+    public RoleController(IRoleService roleService)
     {
         _roleService = roleService;
     }

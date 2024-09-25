@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class GroupController : ControllerBase
 {
-    private readonly GroupService _groupService;
+    private readonly IGroupService _groupService;
 
     // Constructor for injecting the Group service.
-    public GroupController(GroupService groupService)
+    public GroupController(IGroupService groupService)
     {
         _groupService = groupService;
     }

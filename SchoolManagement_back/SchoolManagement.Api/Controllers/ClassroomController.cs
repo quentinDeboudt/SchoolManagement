@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 public class ClassroomController : ControllerBase
 {
-    private readonly ClassroomService _classroomService;
+    private readonly IClassroomService _classroomService;
 
     // Constructor for injecting the Classroom service.
-    public ClassroomController(ClassroomService classroomService)
+    public ClassroomController(IClassroomService classroomService)
     {
         _classroomService = classroomService;
     }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagement.Application.Interfaces;
 using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace SchoolManagement.API.Controllers;
 [Route("api/[controller]")]
 public class PersonController : ControllerBase
 {
-    private readonly PersonService _personService;
+    private readonly IPersonService _personService;
 
     // Constructor for injecting the Person service.
-    public PersonController(PersonService personService)
+    public PersonController(IPersonService personService)
     {
         _personService = personService;
     }
