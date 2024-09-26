@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 
 namespace SchoolManagement.Domain.Entities;
-
 public class Subject
 {
     public int Id { get; set; }

@@ -4,6 +4,7 @@ using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.Services;
 using System.Threading.Tasks;
 
+
 namespace SchoolManagement.API.Controllers;
 
 [Route("api/[controller]")]
@@ -30,10 +31,9 @@ public class RoleController : ControllerBase
     // Get all roles without pagination.
     // Returns: An ActionResult containing a list of all roles.
     [HttpGet]
-    public ActionResult<IEnumerable<Role>> GetAll()
+    public async Task<IEnumerable<Role>> GetAll()
     {
-        var roles = _roleService.GetAllAsync();
-        return Ok(roles);
+        return await _roleService.GetAllAsync();
     }
 
     // Get roles with pagination.

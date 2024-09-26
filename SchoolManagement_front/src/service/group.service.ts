@@ -21,6 +21,10 @@ export class GroupService implements IEntityService<Group>{
     return this.http.get<number>(this.apiUrl+`/count`);
   }
 
+  public getAllEntities(): Observable<Group[]>{
+    return this.http.get<Group[]>(this.apiUrl);
+  }
+
   public getEntities(pageNumber: number, pageSize: number): Observable<Group[]>{
     return this.http.get<Group[]>(`${this.apiUrl}/pagination?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }

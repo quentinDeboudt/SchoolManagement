@@ -22,9 +22,9 @@ public class PersonService: IPersonService
 
     // Get all persons without pagination.
     // Returns: An ActionResult containing a list of all persons.
-    public Task<IEnumerable<Person>> GetAllAsync()
+    public async Task<IEnumerable<Person>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return await _repository.GetAllAsync();
     }
 
     // Get persons with pagination.
@@ -50,9 +50,9 @@ public class PersonService: IPersonService
     // Parameters:
     //   - person: The person entity to create (Person).
     // Returns: An ActionResult indicating the result of the creation.
-    public void AddAsync(Person person)
+    public async Task<int> AddAsync(Person person)
     {
-        _repository.AddAsync(person);
+        return await _repository.AddAsync(person);
     }
 
     // Update an existing person.

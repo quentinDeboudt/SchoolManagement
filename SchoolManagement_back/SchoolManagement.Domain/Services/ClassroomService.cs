@@ -5,7 +5,6 @@ using SchoolManagement.Domain.Entities;
 using SchoolManagement.Domain.IRepository;
 
 namespace SchoolManagement.Domain.Services;
-
 public class ClassroomService : IClassroomService
 {
     private readonly IClassroomRepository _repository;
@@ -26,9 +25,9 @@ public class ClassroomService : IClassroomService
     /// <summary>
     /// Get all classrooms.
     /// </summary>
-    public Task<IEnumerable<Classroom>> GetAllAsync()
+    public async Task<IEnumerable<Classroom>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return await _repository.GetAllAsync();
     }
 
     /// <summary>

@@ -26,9 +26,9 @@ public class RoleService: IRoleService
     /// Get all roles.
     /// </summary>
     /// 
-    public Task<IEnumerable<Role>> GetAllAsync()
+    public async Task<IEnumerable<Role>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return await _repository.GetAllAsync();
     }
 
     /// <summary>

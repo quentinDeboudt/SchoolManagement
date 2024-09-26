@@ -23,17 +23,15 @@ public class GroupController : ControllerBase
     [HttpGet("count")]
     public async Task<ActionResult<int>> GetGroupsCount()
     {
-        var count = await _groupService.CountAsync();
-        return Ok(count);
+        return await _groupService.CountAsync();
     }
 
     // Get all groups without pagination.
     // Returns: An ActionResult containing a list of all groups.
     [HttpGet]
-    public ActionResult<IEnumerable<Group>> GetAll()
+    public async Task<IEnumerable<Group>> GetAll()
     {
-        var groups = _groupService.GetAllAsync();
-        return Ok(groups);
+        return await _groupService.GetAllAsync();
     }
 
     // Get groups with pagination.

@@ -45,8 +45,14 @@ builder.Services.AddScoped<ISubjectRepository, EfCoreSubjectRepository>();
 
 
 // Configurer DbContext avec SQL Server
+// builder.Services.AddDbContext<SchoolManagementDbContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 builder.Services.AddDbContext<SchoolManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    ServiceLifetime.Scoped); // Scoped est recommandé
+
 
 // Configurer Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

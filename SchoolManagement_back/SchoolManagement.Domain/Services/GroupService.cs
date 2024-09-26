@@ -25,9 +25,9 @@ public class GroupService : IGroupService
     /// <summary>
     /// Get all groups.
     /// </summary>
-    public Task<IEnumerable<Group>> GetAllAsync()
+    public async Task<IEnumerable<Group>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return await _repository.GetAllAsync();
     }
 
     /// <summary>

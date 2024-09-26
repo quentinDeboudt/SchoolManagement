@@ -21,6 +21,10 @@ export class LessonService implements IEntityService<Lesson>{
     return this.http.get<number>(this.apiUrl+`/count`);
   }
 
+  public getAllEntities(): Observable<Lesson[]>{
+    return this.http.get<Lesson[]>(this.apiUrl);
+  }
+
   public getEntities(pageNumber: number, pageSize: number): Observable<Lesson[]>{
     return this.http.get<Lesson[]>(`${this.apiUrl}/pagination?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }

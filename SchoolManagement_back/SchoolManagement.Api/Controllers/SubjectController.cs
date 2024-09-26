@@ -30,10 +30,9 @@ public class SubjectController : ControllerBase
     // Get all subjects without pagination.
     // Returns: An ActionResult containing a list of all subjects.
     [HttpGet]
-    public ActionResult<IEnumerable<Subject>> GetAll()
+    public async Task<IEnumerable<Subject>> GetAll()
     {
-        var subjects = _subjectService.GetAllAsync();
-        return Ok(subjects);
+        return await _subjectService.GetAllAsync();
     }
 
     // Get subjects with pagination.

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 
 namespace SchoolManagement.Infrastructure;
 
@@ -21,15 +23,44 @@ public class SchoolManagementDbContext : DbContext
     {
         // Configurations spécifiques pour les relations many-to-many
 
-        modelBuilder.Entity<Person>()
-            .HasMany(p => p.Roles)
-            .WithMany(r => r.Persons)
-            .UsingEntity(j => j.ToTable("PersonRole"));
+
+        // modelBuilder.Entity<Person>()
+        //     .HasMany(p => p.Roles)
+        //     .WithMany(r => r.Persons)
+        //     .UsingEntity(j => j.ToTable("PersonRole"));
 
         modelBuilder.Entity<Person>()
-            .HasMany(p => p.StudentGroups)
-            .WithMany(g => g.Students)
-            .UsingEntity(j => j.ToTable("StudentGroup"));
+        .HasMany(p => p.Roles)
+        .WithMany(r => r.Persons)
+        .UsingEntity<Dictionary<string, object>>(
+            "PersonRole",
+            j => j.HasOne<Role>()
+                  .WithMany()
+                  .HasForeignKey("RolesId")
+                  .OnDelete(DeleteBehavior.Cascade),
+            j => j.HasOne<Person>()
+                  .WithMany()
+                  .HasForeignKey("PersonsId")
+                  .OnDelete(DeleteBehavior.Cascade));
+
+        // modelBuilder.Entity<Person>()
+        //     .HasMany(p => p.StudentGroups)
+        //     .WithMany(g => g.Students)
+        //     .UsingEntity(j => j.ToTable("StudentGroup"));
+
+        modelBuilder.Entity<Person>()
+        .HasMany(p => p.StudentGroups)
+        .WithMany(g => g.Students)
+        .UsingEntity<Dictionary<string, object>>(
+            "StudentGroup",
+            j => j.HasOne<Group>()
+                  .WithMany()
+                  .HasForeignKey("StudentGroupsId")
+                  .OnDelete(DeleteBehavior.Cascade),
+            j => j.HasOne<Person>()
+                  .WithMany()
+                  .HasForeignKey("StudentsId")
+                  .OnDelete(DeleteBehavior.Cascade));
 
         modelBuilder.Entity<Person>()
             .HasMany(p => p.TeacherClassrooms)

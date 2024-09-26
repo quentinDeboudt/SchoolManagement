@@ -30,10 +30,9 @@ public class PersonController : ControllerBase
     // Get all persons without pagination.
     // Returns: An ActionResult containing a list of all persons.
     [HttpGet]
-    public ActionResult<IEnumerable<Person>> GetAll()
+    public async Task<IEnumerable<Person>> GetAll()
     {
-        var persons = _personService.GetAllAsync();
-        return Ok(persons);
+        return await _personService.GetAllAsync();
     }
 
     // Get persons with pagination.
@@ -71,10 +70,9 @@ public class PersonController : ControllerBase
     // Returns: An ActionResult indicating the result of the creation.
     //          Returns 201 Created with the URI of the new person.
     [HttpPost]
-    public ActionResult Create([FromBody] Person person)
+    public async Task<int> Create([FromBody] Person person)
     {
-        _personService.AddAsync(person);
-        return CreatedAtAction(nameof(GetById), new { id = person.Id }, person);
+        return await _personService.AddAsync(person);
     }
 
     // Update an existing person.

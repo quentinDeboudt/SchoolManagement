@@ -61,7 +61,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: total => this.totalStudent = total,
-        error: err => console.error('Failed to fetch entities', err)
       });
   }
 

@@ -22,6 +22,10 @@ export class SubjectService implements IEntityService<Subject>{
     return this.http.get<number>(this.apiUrl+`/count`);
   }
 
+  public getAllEntities(): Observable<Subject[]>{
+    return this.http.get<Subject[]>(this.apiUrl);
+  }
+
   public getEntities(pageNumber: number, pageSize: number): Observable<Subject[]>{
     return this.http.get<Subject[]>(`${this.apiUrl}/pagination?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }

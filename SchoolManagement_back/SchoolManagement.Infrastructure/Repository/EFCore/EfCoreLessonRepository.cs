@@ -41,6 +41,8 @@ public class EfCoreLessonRepository : ILessonRepository
         return await _context.Lessons
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
+            .Include(p => p.Subject)
+            .Include(p => p.Teachers)
             .Include(p => p.Groups)
             .ToListAsync();
     }

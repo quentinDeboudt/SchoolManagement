@@ -30,10 +30,9 @@ public class LessonController : ControllerBase
     // Get all lessons without pagination.
     // Returns: An ActionResult containing a list of all lessons.
     [HttpGet]
-    public ActionResult<IEnumerable<Lesson>> GetAll()
+    public async Task<IEnumerable<Lesson>> GetAll()
     {
-        var lessons = _lessonService.GetAllAsync();
-        return Ok(lessons);
+        return await _lessonService.GetAllAsync();
     }
 
     // Get lessons with pagination.

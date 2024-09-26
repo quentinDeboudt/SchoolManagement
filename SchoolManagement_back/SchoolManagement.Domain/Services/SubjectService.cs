@@ -25,9 +25,9 @@ public class SubjectService : ISubjectService
     /// <summary>
     /// Get all subjects.
     /// </summary>
-    public Task<IEnumerable<Subject>> GetAllAsync()
+    public async Task<IEnumerable<Subject>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return await _repository.GetAllAsync();
     }
 
     /// <summary>

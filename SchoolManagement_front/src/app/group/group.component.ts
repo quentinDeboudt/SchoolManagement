@@ -20,7 +20,7 @@ export class GroupComponent{
   public readonly headerData = "Nom du Groupe";
   public readonly entityName = "Groupe";
   public readonly icon = "group_add";
-  public readonly columns = ['name','classroom'];
+  public readonly columns = ['name'];
   public readonly fieldsModal = [
     { label: 'Nom du groupe', formControlName: 'name', type: 'text' },
     { label: 'Nom de la class', formControlName: 'classroom', type: 'entity' }

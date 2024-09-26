@@ -25,9 +25,9 @@ public class LessonService : ILessonService
     /// <summary>
     /// Get all lessons.
     /// </summary>
-    public Task<IEnumerable<Lesson>> GetAllAsync()
+    public async Task<IEnumerable<Lesson>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return await _repository.GetAllAsync();
     }
 
     /// <summary>

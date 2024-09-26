@@ -30,10 +30,9 @@ public class ClassroomController : ControllerBase
     // Get all classrooms without pagination.
     // Returns: An ActionResult containing a list of all classrooms.
     [HttpGet]
-    public ActionResult<IEnumerable<Classroom>> GetAll()
+    public async Task<IEnumerable<Classroom>> GetAll()
     {
-        var classrooms = _classroomService.GetAllAsync();
-        return Ok(classrooms);
+        return await _classroomService.GetAllAsync();
     }
 
     // Get classrooms with pagination.
@@ -42,10 +41,10 @@ public class ClassroomController : ControllerBase
     //   - pageSize: The number of items per page (int).
     // Returns: A Task containing a list of classrooms for the specified page.
     [HttpGet("pagination")]
-    public Task<List<Classroom>> GetWithPagination(int pageNumber, int pageSize)
+    public async Task<List<Classroom>> GetWithPagination(int pageNumber, int pageSize)
     {
         var classrooms = _classroomService.GetWithPagination(pageNumber, pageSize);
-        return classrooms;
+        return await classrooms;
     }
 
     // Get a specific classroom by ID.
